@@ -1,37 +1,30 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { BrandIcon, type BrandIconName } from "@/components/brand-icon";
 import { Button } from "@/components/ui/button";
 
-type SidebarItemProps = {
-  label: string;
-  iconSrc: string;
-  href: string;
-};
-
-export const SidebarItem = ({ label, iconSrc, href }: SidebarItemProps) => {
-  const pathname = usePathname();
-  const isActive = pathname === href;
-
-  return (
-    <Button
-      variant={isActive ? "sidebarOutline" : "sidebar"}
-      className="h-[52px] justify-start"
-      asChild
-    >
-      <Link href={href} prefetch>
-        <Image
-          src={iconSrc}
-          alt={label}
-          className="mr-5"
-          height={32}
-          width={32}
-        />
-        {label}
-      </Link>
-    </Button>
-  );
+export const SidebarItem = (
+	{ label, icon, href }: { label: string; icon: BrandIconName; href: string },
+) => {
+	const pathname = usePathname();
+	const active = pathname === href ||
+		(href === "/learn" &&
+			["/courses", "/writing", "/level", "/kana"].some((p) =>
+				pathname.startsWith(p)
+			));
+	return (
+		<Button
+			variant={active ? "sidebarOutline" : "sidebar"}
+			className="h-16 w-full justify-start gap-4 px-4"
+			asChild
+		>
+			<Link href={href} aria-current={active ? "page" : undefined}>
+				<BrandIcon name={icon} className="h-9 w-9 shrink-0" />
+				<span className="game-nav-label">{label}</span>
+			</Link>
+		</Button>
+	);
 };

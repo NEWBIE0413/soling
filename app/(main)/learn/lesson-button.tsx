@@ -2,148 +2,138 @@
 
 import { useEffect, useRef } from "react";
 
-import { Check, Crown, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 
-import { Button } from "@/components/ui/button";
+import { BrandIcon } from "@/components/brand-icon";
 import { cn } from "@/lib/utils";
 
-import "react-circular-progressbar/dist/styles.css";
-
 type LessonButtonProps = {
-  id: number;
-  index: number;
-  totalCount: number;
-  locked?: boolean;
-  current?: boolean;
-  percentage: number;
-  moment?: "done" | "opened"; // just finished / just opened by that finish (learn/page.tsx)
+	id: number;
+	title: string;
+	index: number;
+	totalCount: number;
+	locked?: boolean;
+	current?: boolean;
+	percentage: number;
+	moment?: "done" | "opened";
 };
 
-export const LessonButton = ({
-  id,
-  index,
-  totalCount,
-  locked,
-  current,
-  percentage,
-  moment,
-}: LessonButtonProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  // The path's reward moment: bring the node into view (the opened one wins — it comes later in the
-  // path) and drop ?done, so a reload or a back navigation doesn't replay it.
-  useEffect(() => {
-    if (!moment) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    ref.current?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
-    if (moment === "done") window.history.replaceState(null, "", "/learn");
-  }, [moment]);
+export const LessonButton = (
+	{ id, title, index, totalCount, locked, current, percentage, moment }:
+		LessonButtonProps,
+) => {
+	const ref = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (moment !== "opened" && moment !== "done") return;
+		if (moment === "opened") {
+			ref.current?.scrollIntoView({
+				block: "center",
+				behavior:
+					window.matchMedia("(prefers-reduced-motion: reduce)")
+							.matches
+						? "auto"
+						: "smooth",
+			});
+		}
+		if (moment === "done") window.history.replaceState(null, "", "/learn");
+	}, [moment]);
 
-  const cycleLength = 8;
-  const cycleIndex = index % cycleLength;
+	const completed = !current && !locked;
+	const offset = [0, 24, 48, 24][index % 4];
+	const icon = locked
+		? "lock"
+		: completed
+		? "check"
+		: index === totalCount
+		? "trophy"
+		: "star";
+	const content = (
+		<>
+			<span
+				className={cn(
+					"lesson-node",
+					current && "lesson-node-current",
+					completed && "lesson-node-done",
+					locked && "lesson-node-locked",
+				)}
+			>
+				<BrandIcon name={icon} className="h-11 w-11" />
+			</span>
+			<span className="min-w-0 flex-1">
+				<span className="mb-1 block text-xs font-bold text-muted-foreground">
+					{completed
+						? "완료 · 다시 연습하기"
+						: current
+						? percentage > 0
+							? "이어서 학습하기"
+							: "지금 시작할 레슨"
+						: `레슨 ${index + 1}`}
+				</span>
+				<span
+					className={cn(
+						"block text-base font-extrabold leading-snug",
+						locked ? "text-muted-foreground" : "text-foreground",
+					)}
+				>
+					{title}
+				</span>
+				{current && percentage > 0 && (
+					<span className="mt-2 block h-1.5 max-w-32 overflow-hidden rounded-full bg-white">
+						<span
+							className="block h-full origin-left rounded-full bg-[var(--game-green)]"
+							style={{
+								transform: `scaleX(${
+									Math.min(100, percentage) / 100
+								})`,
+							}}
+						/>
+					</span>
+				)}
+			</span>
+			{current && (
+				<ArrowRight
+					className="h-5 w-5 shrink-0 text-[var(--game-green-depth)]"
+					aria-hidden
+				/>
+			)}
+		</>
+	);
 
-  let indentationLevel;
-
-  if (cycleIndex <= 2) indentationLevel = cycleIndex;
-  else if (cycleIndex <= 4) indentationLevel = 4 - cycleIndex;
-  else if (cycleIndex <= 6) indentationLevel = 4 - cycleIndex;
-  else indentationLevel = cycleIndex - 8;
-
-  const rightPosition = indentationLevel * 36;
-
-  const isFirst = index === 0;
-  const isLast = index === totalCount;
-  const isCompleted = !current && !locked;
-
-  const Icon = isCompleted ? Check : isLast ? Crown : Star;
-
-  const href = isCompleted ? `/lesson/${id}` : "/lesson";
-
-  const marginTop = isFirst ? (current ? 34 : 20) : 20;
-
-  return (
-    <Link
-      href={href}
-      prefetch
-      aria-disabled={locked}
-      style={{ pointerEvents: locked ? "none" : "auto" }}
-    >
-      <div
-        ref={ref}
-        className={cn(
-          "relative",
-          moment === "done" && "animate-[node-done_.5s_.25s_backwards] motion-reduce:animate-none",
-          moment === "opened" && "animate-[node-unlock_.5s_.8s_backwards] motion-reduce:animate-none"
-        )}
-        style={{
-          right: `${rightPosition}px`,
-          marginTop: `${marginTop}px`,
-        }}
-      >
-        {current ? (
-          <div className="relative h-[96px] w-[96px]">
-            <div className="absolute -top-7 left-1/2 z-10 -translate-x-1/2">
-              <div className={cn(moment === "opened" && "animate-[drop-in_.35s_1.2s_cubic-bezier(0.23,1,0.32,1)_backwards] motion-reduce:animate-none")}>
-                <div className="relative animate-bounce whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-1 text-xs font-black uppercase tracking-wider text-green-600 shadow-sm motion-reduce:animate-none">
-                  시작
-                  <div
-                    className="absolute -bottom-1.5 left-1/2 h-0 w-0 -translate-x-1/2 transform border-x-[5px] border-t-[6px] border-x-transparent border-t-white"
-                    aria-hidden
-                  />
-                </div>
-              </div>
-            </div>
-            <CircularProgressbarWithChildren
-              value={Number.isNaN(percentage) ? 0 : percentage}
-              styles={{
-                path: {
-                  stroke: "#22c55e",
-                  strokeWidth: 6,
-                  strokeLinecap: "round",
-                },
-                trail: {
-                  stroke: "#e2e8f0",
-                  strokeWidth: 6,
-                },
-              }}
-            >
-              <Button
-                size="rounded"
-                variant={locked ? "locked" : "secondary"}
-                className="h-[68px] w-[68px] border-b-8 transition duration-100 ease-out active:translate-y-1.5 active:border-b-2 motion-reduce:active:translate-y-0"
-              >
-                <Icon
-                  className={cn(
-                    "h-8 w-8",
-                    locked
-                      ? "fill-neutral-400 stroke-neutral-400 text-neutral-400"
-                      : "fill-primary-foreground text-primary-foreground",
-                    isCompleted && "fill-none stroke-[3.5]"
-                  )}
-                />
-              </Button>
-            </CircularProgressbarWithChildren>
-          </div>
-        ) : (
-          <Button
-            size="rounded"
-            variant={locked ? "locked" : "secondary"}
-            className="h-[68px] w-[68px] border-b-8 transition duration-100 ease-out active:translate-y-1.5 active:border-b-2 motion-reduce:active:translate-y-0"
-          >
-            <Icon
-              className={cn(
-                "h-8 w-8",
-                locked
-                  ? "fill-neutral-400 stroke-neutral-400 text-neutral-400"
-                  : "fill-primary-foreground text-primary-foreground",
-                isCompleted && "fill-none stroke-[3.5]",
-                moment === "done" && "animate-[stamp_.45s_.4s_backwards] motion-reduce:animate-none"
-              )}
-            />
-          </Button>
-        )}
-      </div>
-    </Link>
-  );
+	return (
+		<div
+			ref={ref}
+			className={cn(
+				"relative w-full",
+				moment === "done" &&
+					"animate-[node-done_.5s_ease-out] motion-reduce:animate-none",
+				moment === "opened" &&
+					"animate-[node-unlock_.5s_ease-out] motion-reduce:animate-none",
+			)}
+			style={{ paddingLeft: offset }}
+		>
+			{locked
+				? (
+					<div
+						aria-label={`${title}, 이전 레슨을 완료하면 열립니다`}
+						className="flex items-center gap-4 rounded-2xl px-3 py-4"
+					>
+						{content}
+					</div>
+				)
+				: (
+					<Link
+						href={completed ? `/lesson/${id}` : "/lesson"}
+						aria-current={current ? "step" : undefined}
+						className={cn(
+							"group flex items-center gap-4 rounded-2xl px-3 py-4 transition-colors hover:bg-muted",
+							current &&
+								"bg-[var(--game-green-soft)] hover:bg-[var(--game-green-soft)]",
+						)}
+					>
+						{content}
+					</Link>
+				)}
+		</div>
+	);
 };

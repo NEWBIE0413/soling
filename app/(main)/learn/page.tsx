@@ -1,102 +1,229 @@
-import { auth } from "@/lib/session";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { BrandIcon } from "@/components/brand-icon";
 import { FeedWrapper } from "@/components/feed-wrapper";
-import { Promo } from "@/components/promo";
+import { Mascot } from "@/components/mascot";
 import { StickyWrapper } from "@/components/sticky-wrapper";
+import { Button } from "@/components/ui/button";
 import { UserProgress } from "@/components/user-progress";
-import {
-  getCourseProgress,
-  getLessonPercentage,
-  getUnits,
-  getUserProgress,
-  getUserSubscription,
-} from "@/db/queries";
-
 import { KANA_TRAINER_TITLE } from "@/constants";
+import {
+	getCourseProgress,
+	getLessonPercentage,
+	getUnits,
+	getUserProgress,
+	getUserSubscription,
+} from "@/db/queries";
+import { auth } from "@/lib/session";
+import { todayGoal } from "@/lib/streak";
 
-import { Header } from "./header";
 import { KanaHome } from "./kana-home";
 import { LearnExtras } from "./learn-extras";
 import { Unit } from "./unit";
 
-const LearnPage = async ({ searchParams }: { searchParams: Promise<{ done?: string }> }) => {
-  await auth.protect();
-  const { done } = await searchParams;
+export default async function LearnPage(
+	{ searchParams }: { searchParams: Promise<{ done?: string }> },
+) {
+	const session = await auth.protect();
+	const { done } = await searchParams;
+	const [progress, units, courseProgress, percentage, subscription, goal] =
+		await Promise.all([
+			getUserProgress(),
+			getUnits(),
+			getCourseProgress(),
+			getLessonPercentage(),
+			getUserSubscription(),
+			todayGoal(session.user.id),
+		]);
+	if (!progress?.activeCourse) redirect("/courses");
+	if (progress.activeCourse.title === KANA_TRAINER_TITLE) return <KanaHome />;
+	const path = units.flatMap((unit) => unit.lessons);
+	const at = path.findIndex((lesson) => lesson.id === Number(done));
+	const justDone = at >= 0 ? path[at].id : undefined;
+	const opened =
+		at >= 0 && path[at + 1]?.id === courseProgress?.activeLesson?.id
+			? path[at + 1].id
+			: undefined;
+	const active = courseProgress?.activeLesson;
+	const completed = path.filter((lesson) => lesson.completed).length;
+	const currentUnit = units.find((unit) => unit.id === active?.unitId);
+	const courseFinished = path.length > 0 && completed === path.length;
 
-  const userProgressData = getUserProgress();
-  const courseProgressData = getCourseProgress();
-  const lessonPercentageData = getLessonPercentage();
-  const unitsData = getUnits();
-  const userSubscriptionData = getUserSubscription();
-
-  const [
-    userProgress,
-    units,
-    courseProgress,
-    lessonPercentage,
-    userSubscription,
-  ] = await Promise.all([
-    userProgressData,
-    unitsData,
-    courseProgressData,
-    lessonPercentageData,
-    userSubscriptionData,
-  ]);
-
-  if (!userProgress || !userProgress.activeCourse) redirect("/courses");
-
-  const isPro = !!userSubscription?.isActive;
-
-  // 히라가나 훈련 has no units: it runs full-screen at /trainer, like a lesson does.
-  // 히라가나 훈련 has no units: the kana engine's own home takes the path's place (see kana-home.tsx)
-  if (userProgress.activeCourse.title === KANA_TRAINER_TITLE) return <KanaHome />;
-
-  if (!courseProgress) redirect("/courses");
-
-  // Back from a first completion (/learn?done=<lesson>): that node fills and, if the next lesson in
-  // path order is now the active one, it opens (lesson-button.tsx).
-  const path = units.flatMap((u) => u.lessons);
-  const at = path.findIndex((l) => l.id === Number(done));
-  const justDone = at >= 0 ? path[at].id : undefined;
-  const opened = at >= 0 && path[at + 1]?.id === courseProgress.activeLesson?.id ? path[at + 1].id : undefined;
-
-  return (
-    <div className="flex flex-row-reverse gap-[48px] px-4 sm:px-6">
-      <StickyWrapper>
-        <UserProgress
-          activeCourse={userProgress.activeCourse}
-          hearts={userProgress.hearts}
-          points={userProgress.points}
-          gems={userProgress.gems}
-          hasActiveSubscription={isPro}
-        />
-
-        {!isPro && <Promo />}
-      </StickyWrapper>
-      <FeedWrapper>
-        <div className="hidden lg:block">
-          <Header title={userProgress.activeCourse.title} />
-        </div>
-        <LearnExtras />
-        {units.map((unit) => (
-          <div key={unit.id} className="mb-8 lg:mb-10">
-            <Unit
-              id={unit.id}
-              order={unit.order}
-              description={unit.description}
-              title={unit.title}
-              lessons={unit.lessons}
-              activeLesson={courseProgress.activeLesson}
-              activeLessonPercentage={lessonPercentage}
-              justDone={justDone}
-              opened={opened}
-            />
-          </div>
-        ))}
-      </FeedWrapper>
-    </div>
-  );
-};
-
-export default LearnPage;
+	return (
+		<div className="flex items-start gap-8">
+			<FeedWrapper>
+				<header className="mb-6 flex items-center justify-between gap-3">
+					<div>
+						<p className="text-sm font-bold text-muted-foreground">
+							나의 학습 길
+						</p>
+						<h1 className="game-page-title mt-1">
+							{progress.activeCourse.title}
+						</h1>
+					</div>
+					<Button asChild variant="ghost" size="icon">
+						<Link href="/courses" aria-label="코스 바꾸기">
+							<BrandIcon name="course" />
+						</Link>
+					</Button>
+				</header>
+				<section className="learning-hero mb-8">
+					<div className="relative z-10 min-w-0 flex-1">
+						<p className="mb-2 text-xs font-extrabold text-[#3c741d]">
+							{courseFinished
+								? "코스 완료"
+								: currentUnit
+								? `유닛 ${currentUnit.order} · ${completed}개 레슨 완료`
+								: "새로운 배움의 시작"}
+						</p>
+						<h2 className="text-2xl font-black leading-tight tracking-tight sm:text-3xl">
+							{courseFinished
+								? "여기까지, 정말 잘했어요!"
+								: percentage > 0
+								? "배우던 곳에서 계속해요"
+								: "오늘도 한 걸음 더"}
+						</h2>
+						<p className="mb-5 mt-2 text-sm leading-relaxed text-muted-foreground">
+							{active?.title ?? (courseFinished
+								? "복습으로 배운 것을 내 것으로 만들어 보세요."
+								: "첫 레슨으로 새로운 언어를 만나 보세요.")}
+						</p>
+						<Button
+							asChild
+							variant="secondary"
+							className="min-w-36"
+						>
+							<Link
+								href={active
+									? "/lesson"
+									: courseFinished
+									? "/practice"
+									: "/courses"}
+							>
+								{active
+									? "학습 시작"
+									: courseFinished
+									? "복습하기"
+									: "코스 살펴보기"}
+								<ArrowRight className="h-4 w-4" aria-hidden />
+							</Link>
+						</Button>
+					</div>
+					<Mascot
+						pose="wave"
+						className="w-28 shrink-0 self-end sm:w-40"
+					/>
+				</section>
+				<LearnExtras />
+				<div className="mt-8 space-y-5">
+					{units.map((unit) => {
+						const unitDone = unit.lessons.filter((lesson) =>
+							lesson.completed
+						).length;
+						const isCurrent = currentUnit?.id === unit.id ||
+							(!active && unit.order === 1);
+						const opens = isCurrent ||
+							unit.lessons.some((lesson) =>
+								lesson.id === justDone
+							);
+						return (
+							<details
+								key={unit.id}
+								open={opens}
+								className="learning-unit group/unit"
+							>
+								<summary className="flex cursor-pointer list-none items-center gap-3 rounded-2xl px-1 py-3">
+									<span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-sm font-black">
+										{unit.order}
+									</span>
+									<span className="min-w-0 flex-1 text-sm font-extrabold">
+										{unit.title}
+									</span>
+									<span className="shrink-0 text-xs font-bold tabular-nums text-muted-foreground">
+										{unitDone}/{unit.lessons.length}
+									</span>
+									<ChevronDown
+										className="h-4 w-4 shrink-0 transition-transform group-open/unit:rotate-180 motion-reduce:transition-none"
+										aria-hidden
+									/>
+								</summary>
+								<Unit
+									{...unit}
+									activeLesson={active}
+									activeLessonPercentage={percentage}
+									justDone={justDone}
+									opened={opened}
+								/>
+							</details>
+						);
+					})}
+				</div>
+			</FeedWrapper>
+			<StickyWrapper>
+				<UserProgress
+					activeCourse={progress.activeCourse}
+					hearts={progress.hearts}
+					points={progress.points}
+					gems={progress.gems}
+					hasActiveSubscription={!!subscription?.isActive}
+				/>
+				<section className="game-panel">
+					<div className="mb-4 flex items-center gap-3">
+						<BrandIcon name="quests" />
+						<h2 className="text-base font-extrabold">
+							오늘의 작은 목표
+						</h2>
+					</div>
+					<p className="text-sm leading-relaxed text-muted-foreground">
+						{goal.done >= goal.goal
+							? "오늘 목표를 채웠어요. 좋은 흐름이에요!"
+							: `레슨 ${goal.goal}개를 마치고 배움의 습관을 쌓아요.`}
+					</p>
+					<div
+						className="my-4 h-3 overflow-hidden rounded-full bg-muted"
+						role="progressbar"
+						aria-label="오늘 학습 목표"
+						aria-valuemin={0}
+						aria-valuemax={goal.goal}
+						aria-valuenow={Math.min(goal.done, goal.goal)}
+					>
+						<div
+							className="h-full origin-left rounded-full bg-[var(--game-green)]"
+							style={{
+								transform: `scaleX(${
+									Math.min(1, goal.done / goal.goal)
+								})`,
+							}}
+						/>
+					</div>
+					<div className="flex items-center justify-between text-sm font-bold">
+						<span>
+							{Math.min(goal.done, goal.goal)} / {goal.goal} 레슨
+						</span>
+						<Link href="/quests" className="py-2 text-[#3c741d]">
+							퀘스트 보기
+						</Link>
+					</div>
+				</section>
+				<section className="rounded-[20px] bg-muted p-5">
+					<BrandIcon name="trophy" className="mb-3 h-12 w-12" />
+					<h2 className="text-base font-extrabold">
+						조금씩 쌓이는 실력
+					</h2>
+					<p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+						전체 {path.length}개 레슨 중{" "}
+						{completed}개를 마쳤어요. 속도보다 꾸준함이 중요해요.
+					</p>
+					<Link
+						href="/profile"
+						className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-bold"
+					>
+						나의 성장 보기<ArrowRight size={16} aria-hidden />
+					</Link>
+				</section>
+			</StickyWrapper>
+		</div>
+	);
+}

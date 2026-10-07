@@ -1,56 +1,48 @@
 import { InfinityIcon, X } from "lucide-react";
-import Image from "next/image";
 
+import { BrandIcon } from "@/components/brand-icon";
 import { Progress } from "@/components/ui/progress";
 import { useExitModal } from "@/store/use-exit-modal";
 
 type HeaderProps = {
-  hearts: number;
-  percentage: number;
-  hasActiveSubscription: boolean;
-  combo?: number; // consecutive correct answers in this lesson; shown from 2
+	hearts: number;
+	percentage: number;
+	hasActiveSubscription: boolean;
+	combo?: number;
 };
 
-export const Header = ({
-  hearts,
-  percentage,
-  hasActiveSubscription,
-  combo = 0,
-}: HeaderProps) => {
-  const { open } = useExitModal();
-
-  return (
-    <header className="mx-auto flex w-full max-w-[1140px] items-center justify-between gap-x-4 px-4 pt-3 sm:gap-x-7 sm:px-8 sm:pt-6 lg:pt-10">
-      <X
-        onClick={open}
-        className="cursor-pointer text-slate-500 transition hover:opacity-75 active:scale-95"
-      />
-
-      <Progress value={percentage} />
-
-      {combo >= 2 && (
-        <div
-          key={combo}
-          className="flex shrink-0 animate-[pop_.35s_ease-out] items-center gap-1 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-0.5 text-xs font-black text-orange-600 shadow-sm"
-        >
-          🔥 {combo}
-        </div>
-      )}
-
-      <div className="flex items-center text-sm font-extrabold text-rose-500 sm:text-base">
-        <Image
-          src="/heart.svg"
-          height={26}
-          width={26}
-          alt="Heart"
-          className="mr-1.5"
-        />
-        {hasActiveSubscription ? (
-          <InfinityIcon className="h-5 w-5 shrink-0 stroke-[3]" />
-        ) : (
-          hearts
-        )}
-      </div>
-    </header>
-  );
+export const Header = (
+	{ hearts, percentage, hasActiveSubscription, combo = 0 }: HeaderProps,
+) => {
+	const { open } = useExitModal();
+	return (
+		<header className="mx-auto flex w-full max-w-[1000px] shrink-0 items-center gap-3 px-4 pb-4 pt-[calc(16px+env(safe-area-inset-top))] sm:gap-6 sm:px-8 sm:pb-6 sm:pt-8">
+			<button
+				type="button"
+				onClick={open}
+				aria-label="레슨 나가기"
+				className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-muted-foreground hover:bg-muted"
+			>
+				<X size={24} />
+			</button>
+			<div className="min-w-0 flex-1">
+				<Progress value={percentage} aria-label="레슨 진행률" />
+			</div>
+			{combo >= 2 && (
+				<span className="hidden items-center gap-1 text-sm font-black text-[#a95016] sm:flex">
+					<BrandIcon name="streak" className="h-7 w-7" />
+					{combo}
+				</span>
+			)}
+			<span
+				className="flex items-center gap-1 text-base font-extrabold text-[#b63448]"
+				aria-label={hasActiveSubscription
+					? "무제한 하트"
+					: `남은 하트 ${hearts}`}
+			>
+				<BrandIcon name="heart" className="h-8 w-8" />
+				{hasActiveSubscription ? <InfinityIcon size={22} /> : hearts}
+			</span>
+		</header>
+	);
 };

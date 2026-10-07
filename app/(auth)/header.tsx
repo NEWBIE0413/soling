@@ -1,47 +1,20 @@
-"use client";
-import Image from "next/image";
 import Link from "next/link";
 
-import { UserButton } from "@/components/auth/user-button";
-import { Button } from "@/components/ui/button";
-import { useSession } from "@/lib/auth-client";
+import { Mascot } from "@/components/mascot";
 
-export const Header = () => {
-  const { data: session } = useSession();
-  const isSignedIn = !!session;
-
-  return (
-    <>
-      <header
-        className="h-20 w-full border-b-2 border-slate-200 px-4"
-      >
-        <div className="mx-auto flex h-full items-center justify-between lg:max-w-screen-lg">
-          <Link
-            href="/"
-            prefetch
-            className="flex items-center gap-x-3 pb-7 pl-4 pt-8"
-          >
-            <Image src="/mascot.svg" alt="Mascot" height={40} width={40} />
-
-            <h1 className="text-2xl font-extrabold tracking-wide text-green-600">
-              Solingo
-            </h1>
-          </Link>
-
-          <div className="flex gap-x-3">
-            {isSignedIn ? (
-              <UserButton compact />
-            ) : (
-              <Button size="lg" variant="ghost" asChild>
-                <Link href="/sign-in" prefetch>
-                  로그인
-                </Link>
-              </Button>
-            )}
-
-          </div>
-        </div>
-      </header>
-    </>
-  );
-};
+export const Header = () => (
+	<header className="w-full px-5 pt-[env(safe-area-inset-top)]">
+		<div className="mx-auto flex h-20 max-w-[1080px] items-center">
+			<Link
+				href="/"
+				aria-label="Solingo 홈"
+				className="flex items-center gap-1"
+			>
+				<Mascot className="h-12 w-12" />
+				<span className="text-2xl font-black tracking-[-.04em] text-[#409309]">
+					solingo
+				</span>
+			</Link>
+		</div>
+	</header>
+);

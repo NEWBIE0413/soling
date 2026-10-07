@@ -6,80 +6,54 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-bold ring-offset-background transition duration-100 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 uppercase tracking-wide active:translate-y-[2px] motion-reduce:transition-none motion-reduce:active:translate-y-0",
-  {
-    variants: {
-      variant: {
-        default:
-          "bg-white text-black border-slate-200 border-2 border-b-4 active:border-b-2 hover:bg-slate-100 text-slate-500",
-
-        // custom
-        locked:
-          "bg-neutral-200 text-primary-foreground hover:bg-neutral-200/90 border-neutral-400 border-b-4 active:border-b-0",
-
-        primary:
-          "bg-sky-400 text-primary-foreground hover:bg-sky-400/90 border-sky-500 border-b-4 active:border-b-0",
-        primaryOutline:
-          "bg-white text-sky-500 hover:bg-slate-100 active:translate-y-0 active:scale-[0.98]",
-
-        secondary:
-          "bg-green-500 text-primary-foreground hover:bg-green-500/90 border-green-600 border-b-4 active:border-b-0",
-        secondaryOutline:
-          "bg-white text-green-500 hover:bg-slate-100 active:translate-y-0 active:scale-[0.98]",
-
-        danger:
-          "bg-rose-500 text-primary-foreground hover:bg-rose-500/90 border-rose-600 border-b-4 active:border-b-0",
-        dangerOutline:
-          "bg-white text-rose-500 hover:bg-slate-100 active:translate-y-0 active:scale-[0.98]",
-
-        super:
-          "bg-indigo-500 text-primary-foreground hover:bg-indigo-500/90 border-indigo-600 border-b-4 active:border-b-0",
-        superOutline:
-          "bg-white text-indigo-500 hover:bg-slate-100 active:translate-y-0 active:scale-[0.98]",
-
-        ghost:
-          "bg-transparent text-slate-500 border-transparent border-0 hover:bg-slate-100 active:translate-y-0 active:scale-95",
-
-        sidebar:
-          "bg-transparent text-slate-500 border-2 border-transparent hover:bg-slate-100 transition-none active:translate-y-0",
-        sidebarOutline:
-          "bg-sky-500/15 text-sky-500 border-sky-300 border-2 hover:bg-sky-500/20 transition-none active:translate-y-0",
-      },
-      size: {
-        default: "h-11 px-4 py-2",
-        sm: "h-9 px-3",
-        lg: "h-12 px-8",
-        icon: "h-10 w-10",
-
-        // custom
-        rounded: "rounded-full",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
+	"game-button inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-extrabold tracking-normal focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-sky-600 focus-visible:ring-offset-4",
+	{
+		variants: {
+			variant: {
+				default: "",
+				locked: "pointer-events-none !bg-[#edf0e9] !text-[#6c7665]",
+				primary: "game-button-blue",
+				primaryOutline: "game-button-quiet text-sky-700",
+				secondary: "game-button-green",
+				secondaryOutline: "game-button-quiet text-green-700",
+				danger: "game-button-red",
+				dangerOutline: "game-button-quiet text-rose-700",
+				super: "game-button-purple",
+				superOutline: "game-button-quiet text-violet-700",
+				ghost: "game-button-quiet",
+				sidebar: "game-button-quiet",
+				sidebarOutline: "game-button-quiet game-nav-active",
+			},
+			size: {
+				default: "min-h-12 px-5 py-2",
+				sm: "min-h-11 px-4 py-2",
+				lg: "min-h-14 px-8 py-3 text-base",
+				icon: "h-11 w-11",
+				rounded: "rounded-full",
+			},
+		},
+		defaultVariants: { variant: "default", size: "default" },
+	},
 );
 
 export interface ButtonProps
-  extends
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+	extends
+		React.ButtonHTMLAttributes<HTMLButtonElement>,
+		VariantProps<typeof buttonVariants> {
+	asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button";
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
+	({ className, variant, size, asChild = false, ...props }, ref) => {
+		const Comp = asChild ? Slot : "button";
+		return (
+			<Comp
+				className={cn(buttonVariants({ variant, size, className }))}
+				ref={ref}
+				{...props}
+			/>
+		);
+	},
 );
 Button.displayName = "Button";
 

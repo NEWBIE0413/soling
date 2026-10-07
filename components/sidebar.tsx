@@ -1,45 +1,37 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { UserButton } from "@/components/auth/user-button";
+import { Mascot } from "@/components/mascot";
+import { NAV_ITEMS } from "@/components/navigation";
 import { cn } from "@/lib/utils";
 
 import { SidebarItem } from "./sidebar-item";
 
-type SidebarProps = {
-  className?: string;
-};
-
-export const Sidebar = ({ className }: SidebarProps) => {
-  return (
-    <div
-      className={cn(
-        "left-0 top-0 flex h-full flex-col border-r-2 px-4 lg:fixed lg:w-[256px]",
-        className
-      )}
-    >
-      <Link href="/learn" prefetch>
-        <div className="flex items-center gap-x-3 pb-7 pl-4 pt-8">
-          <Image src="/mascot.svg" alt="Mascot" height={40} width={40} />
-
-          <h1 className="text-2xl font-extrabold tracking-wide text-green-600">
-            Solingo
-          </h1>
-        </div>
-      </Link>
-
-      <div className="flex flex-1 flex-col gap-y-2">
-        <SidebarItem label="학습" href="/learn" iconSrc="/learn.svg" />
-        <SidebarItem label="리더보드" href="/leaderboard" iconSrc="/leaderboard.svg" />
-        <SidebarItem label="퀘스트" href="/quests" iconSrc="/quests.svg" />
-        <SidebarItem label="상점" href="/shop" iconSrc="/shop.svg" />
-        <SidebarItem label="출석" href="/streak" iconSrc="/quests.svg" />
-        <SidebarItem label="프로필" href="/profile" iconSrc="/girl.svg" />
-      </div>
-
-      <div className="p-4">
-        <UserButton />
-      </div>
-    </div>
-  );
-};
+export const Sidebar = ({ className }: { className?: string }) => (
+	<aside
+		className={cn(
+			"fixed inset-y-0 left-0 z-40 flex w-[224px] flex-col border-r-2 border-border bg-white px-4 py-6",
+			className,
+		)}
+	>
+		<Link
+			href="/learn"
+			className="mb-8 flex items-center gap-1 px-2"
+			aria-label="Solingo 학습 홈"
+		>
+			<Mascot className="h-14 w-14" />
+			<span className="text-[28px] font-black tracking-[-0.04em] text-[#409309]">
+				solingo
+			</span>
+		</Link>
+		<nav
+			aria-label="주 메뉴"
+			className="min-h-0 flex-1 space-y-2 overflow-y-auto"
+		>
+			{NAV_ITEMS.map((item) => <SidebarItem key={item.href} {...item} />)}
+		</nav>
+		<div className="mt-6 border-t border-border px-2 pt-5">
+			<UserButton />
+		</div>
+	</aside>
+);

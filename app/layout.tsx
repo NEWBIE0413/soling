@@ -10,29 +10,39 @@ import { siteConfig } from "@/config";
 
 import "./globals.css";
 
-const font = Nunito({ subsets: ["latin"] });
+const font = Nunito({
+	subsets: ["latin"],
+	display: "swap",
+	fallback: [
+		"ui-rounded",
+		"Apple SD Gothic Neo",
+		"Malgun Gothic",
+		"sans-serif",
+	],
+});
 
 export const viewport: Viewport = {
-  themeColor: "#22C55E",
+	themeColor: "#ffffff",
+	viewportFit: "cover",
 };
 
 export const metadata: Metadata = siteConfig;
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-      <html lang="ko">
-        <body className={font.className}>
-          <Toaster theme="light" richColors closeButton />
-          <Celebrate />
-          <ExitModal />
-          <HeartsModal />
-          <PracticeModal />
-          {children}
-        </body>
-      </html>
-  );
+	return (
+		<html lang="ko">
+			<body className={font.className}>
+				<Toaster theme="light" richColors closeButton />
+				<Celebrate />
+				<ExitModal />
+				<HeartsModal />
+				<PracticeModal />
+				{children}
+			</body>
+		</html>
+	);
 }

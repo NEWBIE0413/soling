@@ -34,6 +34,145 @@
 @tailwind components;
 @tailwind utilities;
 
+.learning-hero {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 24px 24px;
+  border-radius: 28px;
+  background: var(--game-green-soft);
+}
+.learning-unit > summary::-webkit-details-marker {
+  display: none;
+}
+.lesson-node {
+  display: flex;
+  width: 72px;
+  height: 68px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f4f8ee;
+  border: 2px solid #dce3d7;
+  box-shadow: 0 6px 0 #dce3d7;
+  transition:
+    transform 120ms var(--ease-out),
+    box-shadow 120ms var(--ease-out);
+}
+.lesson-node-current {
+  background: var(--game-green);
+  border-color: var(--game-green);
+  box-shadow:
+    0 6px 0 var(--game-green-depth),
+    0 0 0 7px white;
+}
+.lesson-node-done {
+  background: var(--game-green-soft);
+  border-color: #c4dda9;
+  box-shadow: 0 6px 0 #c4dda9;
+}
+.lesson-node-locked {
+  background: #f0f3ec;
+}
+a:active .lesson-node {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #c4dda9;
+}
+.reward-scene {
+  position: relative;
+  width: 260px;
+  height: 234px;
+  flex-shrink: 0;
+  margin: 4px auto;
+}
+.reward-scene::before {
+  content: "";
+  position: absolute;
+  inset: 24px 20px 12px;
+  border-radius: 50%;
+  background: var(--game-green-soft);
+}
+.reward-scene-perfect::before {
+  background: #fff5d8;
+}
+.reward-scene .solingo-mascot {
+  position: relative;
+  width: 240px;
+  margin: 10px auto 0;
+}
+.reward-spark {
+  position: absolute;
+  z-index: 1;
+  width: 28px;
+  height: 28px;
+  animation: reward-star 700ms var(--ease-out) both;
+}
+.reward-spark:nth-child(2) {
+  left: 4px;
+  top: 70px;
+  animation-delay: 260ms;
+}
+.reward-spark:nth-child(3) {
+  right: 8px;
+  top: 24px;
+  animation-delay: 340ms;
+  width: 36px;
+  height: 36px;
+}
+.reward-spark:nth-child(4) {
+  right: 0;
+  top: 142px;
+  animation-delay: 420ms;
+  width: 20px;
+  height: 20px;
+}
+@keyframes reward-star {
+  from {
+    opacity: 0;
+    transform: translateY(10px) rotate(-25deg) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0) scale(1);
+  }
+}
+.lesson-shell {
+  display: flex;
+  height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+  background: white;
+}
+.lesson-scroll {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: clip;
+  overscroll-behavior: contain;
+}
+@media (max-width: 420px) {
+  .learning-hero {
+    padding: 24px 20px;
+    gap: 4px;
+  }
+  .learning-hero > .solingo-mascot {
+    width: 88px;
+  }
+  .reward-scene {
+    width: 230px;
+    height: 208px;
+  }
+  .reward-scene .solingo-mascot {
+    width: 210px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  a:active .lesson-node {
+    transform: none;
+  }
+}
+
 html,
 body,
 :root {
@@ -44,7 +183,7 @@ body,
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 140 12% 23%;
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -58,8 +197,8 @@ body,
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 100 23% 97%;
+    --muted-foreground: 135 6% 43%;
 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
@@ -67,11 +206,25 @@ body,
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
+    --border: 110 13% 88%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+    --game-green: #58c900;
+    --game-green-depth: #409309;
+    --game-green-ink: #214708;
+    --game-green-soft: #eff9e5;
+    --game-blue: #1ca7e8;
+    --game-blue-soft: #eaf7ff;
+    --game-gold: #ffc83d;
+    --game-orange: #ff9633;
+    --game-red: #df5260;
+    --game-purple: #9061cf;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --duration-micro: 120ms;
+    --duration-standard: 220ms;
+    --sidebar-width: 224px;
   }
 
   .dark {
@@ -111,6 +264,305 @@ body,
   }
   body {
     @apply bg-background text-foreground;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  p {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+  button,
+  [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  :focus-visible {
+    outline: 3px solid #087bb8;
+    outline-offset: 4px;
+  }
+  input,
+  textarea,
+  select {
+    font-size: 1rem;
+  }
+}
+
+@layer components {
+  .game-panel {
+    @apply rounded-[20px] border-2 border-border bg-white p-5;
+    box-shadow: 0 3px 0 hsl(var(--border) / 0.45);
+  }
+  .game-page-title {
+    @apply text-2xl font-black tracking-tight text-foreground sm:text-3xl;
+    line-height: 1.25;
+  }
+  .game-icon-tile {
+    @apply flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-muted;
+  }
+  .game-empty {
+    @apply flex flex-col items-center gap-4 rounded-[28px] bg-muted px-6 py-12 text-center;
+  }
+  .game-button {
+    --button-face: white;
+    --button-base: hsl(var(--border));
+    --button-ink: hsl(var(--foreground));
+    position: relative;
+    color: var(--button-ink);
+    background: var(--button-face);
+    border: 2px solid var(--button-base);
+    box-shadow: 0 4px 0 var(--button-base);
+    transition:
+      transform var(--duration-micro) var(--ease-out),
+      box-shadow var(--duration-micro) var(--ease-out),
+      background-color var(--duration-micro) ease;
+  }
+  .game-button:active:not(:disabled):not([aria-disabled="true"]) {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 var(--button-base);
+  }
+  .game-button:disabled,
+  .game-button[aria-disabled="true"] {
+    --button-face: #edf0e9;
+    --button-base: #dce3d7;
+    --button-ink: #6c7665;
+    cursor: not-allowed;
+  }
+  .game-button-green {
+    --button-face: var(--game-green);
+    --button-base: var(--game-green-depth);
+    --button-ink: var(--game-green-ink);
+  }
+  .game-button-blue {
+    --button-face: #d8f2ff;
+    --button-base: #87cbe9;
+    --button-ink: #08648f;
+  }
+  .game-button-red {
+    --button-face: #ffe4e7;
+    --button-base: #eaa3ac;
+    --button-ink: #a1263d;
+  }
+  .game-button-purple {
+    --button-face: #eee3fc;
+    --button-base: #c4a7e5;
+    --button-ink: #68449a;
+  }
+  .game-button-quiet {
+    border-color: transparent;
+    box-shadow: none;
+    background: transparent;
+  }
+  .game-button-quiet:active:not(:disabled) {
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+  .game-nav-active {
+    --button-face: var(--game-green-soft);
+    --button-ink: #3c741d;
+    background: var(--button-face);
+  }
+  .game-choice {
+    @apply relative rounded-2xl border-2 border-border bg-white text-left;
+    box-shadow: 0 3px 0 hsl(var(--border));
+    transition:
+      transform 120ms var(--ease-out),
+      box-shadow 120ms var(--ease-out),
+      background-color 120ms ease;
+  }
+  .game-choice:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 hsl(var(--border));
+  }
+  .game-choice[aria-pressed="true"] {
+    background: var(--game-blue-soft);
+  }
+  .game-choice[data-status="correct"] {
+    background: var(--game-green-soft);
+  }
+  .game-choice[data-status="wrong"] {
+    background: #fff0f1;
+  }
+  .game-nav-label {
+    @apply text-sm font-extrabold;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .game-button:not(:disabled):not([aria-disabled="true"]):hover {
+    filter: brightness(0.98);
+  }
+  .game-button-quiet:hover,
+  .game-choice:hover:not(:disabled) {
+    background: hsl(var(--muted));
+  }
+  .game-choice[aria-pressed="true"]:hover {
+    background: var(--game-blue-soft);
+  }
+}
+
+/* A finite performance, not a constantly moving decoration. Limbs share pivots. */
+.solingo-mascot {
+  overflow: visible;
+}
+.mascot-arm-left {
+  transform-origin: 65px 109px;
+}
+.mascot-arm-right {
+  transform-origin: 175px 109px;
+}
+.mascot-foot-left {
+  transform-origin: 92px 180px;
+}
+.mascot-foot-right {
+  transform-origin: 148px 180px;
+}
+.mascot-character {
+  transform-origin: 120px 190px;
+}
+.mascot-ground {
+  transform-origin: 120px 205px;
+}
+.mascot-wave .mascot-arm-right {
+  animation: mascot-wave 1100ms var(--ease-out) both;
+}
+.mascot-celebrate .mascot-character {
+  animation: mascot-jump 1100ms both;
+}
+.mascot-celebrate .mascot-arm-left {
+  animation: mascot-cheer-left 1100ms both;
+}
+.mascot-celebrate .mascot-arm-right {
+  animation: mascot-cheer-right 1100ms both;
+}
+.mascot-celebrate .mascot-foot-left {
+  animation: mascot-kick-left 1100ms both;
+}
+.mascot-celebrate .mascot-foot-right {
+  animation: mascot-kick-right 1100ms both;
+}
+.mascot-celebrate .mascot-ground {
+  animation: mascot-shadow 1100ms both;
+}
+@keyframes mascot-wave {
+  0% {
+    transform: rotate(0);
+  }
+  30%,
+  65% {
+    transform: rotate(-125deg);
+  }
+  45%,
+  80% {
+    transform: rotate(-100deg);
+  }
+  100% {
+    transform: rotate(-15deg);
+  }
+}
+@keyframes mascot-jump {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  18% {
+    transform: translateY(6px) scale(1.04, 0.94);
+    animation-timing-function: cubic-bezier(0.18, 0.8, 0.3, 1);
+  }
+  48% {
+    transform: translateY(-30px) rotate(-5deg) scale(0.97, 1.03);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.3);
+  }
+  73% {
+    transform: translateY(1px) scale(1.04, 0.96);
+    animation-timing-function: var(--ease-out);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes mascot-cheer-left {
+  0%,
+  18% {
+    transform: rotate(0);
+  }
+  48%,
+  73% {
+    transform: rotate(125deg);
+  }
+  100% {
+    transform: rotate(105deg);
+  }
+}
+@keyframes mascot-cheer-right {
+  0%,
+  18% {
+    transform: rotate(0);
+  }
+  48%,
+  73% {
+    transform: rotate(-130deg);
+  }
+  100% {
+    transform: rotate(-105deg);
+  }
+}
+@keyframes mascot-kick-left {
+  0%,
+  18%,
+  100% {
+    transform: rotate(0);
+  }
+  48% {
+    transform: rotate(18deg);
+  }
+}
+@keyframes mascot-kick-right {
+  0%,
+  18%,
+  100% {
+    transform: rotate(0);
+  }
+  48% {
+    transform: rotate(-18deg);
+  }
+}
+@keyframes mascot-shadow {
+  0%,
+  18%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.09;
+  }
+  48% {
+    transform: scaleX(0.65);
+    opacity: 0.04;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .solingo-mascot *,
+  .reward-spark {
+    animation: none !important;
+  }
+  .mascot-celebrate .mascot-arm-left {
+    transform: rotate(105deg);
+  }
+  .mascot-celebrate .mascot-arm-right {
+    transform: rotate(-105deg);
+  }
+  .game-button:active:not(:disabled),
+  .game-choice:active:not(:disabled) {
+    transform: none;
+  }
+  .game-button,
+  .game-choice {
+    transition: background-color 120ms ease;
   }
 }
 
@@ -386,4 +838,6 @@ body,
 }
 
 /* 히라가나 훈련 세션 중: 레슨처럼 상단바·하단 탭을 치우고 엔진이 화면을 다 쓴다 (app/(main)/learn/kana-home.tsx) */
-.trainer-session nav.fixed { display: none; }
+.trainer-session nav.fixed {
+  display: none;
+}

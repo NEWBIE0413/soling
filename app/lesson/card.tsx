@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 
+import { Check, X } from "lucide-react";
 import Image from "next/image";
 import { useKey } from "react-use";
 
@@ -8,98 +9,110 @@ import { cn } from "@/lib/utils";
 import { play } from "./audio";
 
 type CardProps = {
-  id: number;
-  text: string;
-  imageSrc: string | null;
-  audioSrc: string | null;
-  shortcut: string;
-  selected?: boolean;
-  onClick: () => void;
-  status?: "correct" | "wrong" | "none";
-  disabled?: boolean;
-  layout: "grid" | "list";
-  big?: boolean; // kana / short glyphs get the large treatment
+	id: number;
+	text: string;
+	imageSrc: string | null;
+	audioSrc: string | null;
+	shortcut: string;
+	selected?: boolean;
+	onClick: () => void;
+	status?: "correct" | "wrong" | "none";
+	disabled?: boolean;
+	layout: "grid" | "list";
+	big?: boolean;
 };
 
-const isScript = (t: string) => /[぀-ヿ가-힣一-龯]/.test(t) && t.length <= 2;
+const isScript = (text: string) =>
+	/[぀-ヿ가-힣一-龯]/.test(text) && text.length <= 2;
 
 export const Card = ({
-  text,
-  imageSrc,
-  audioSrc,
-  shortcut,
-  selected,
-  onClick,
-  status,
-  disabled,
-  layout,
-  big,
+	text,
+	imageSrc,
+	audioSrc,
+	shortcut,
+	selected,
+	onClick,
+	status,
+	disabled,
+	layout,
+	big,
 }: CardProps) => {
-  const handleClick = useCallback(() => {
-    if (disabled) return;
-    play(audioSrc);
-    onClick();
-  }, [disabled, onClick, audioSrc]);
+	const handleClick = useCallback(() => {
+		if (disabled || status !== "none") return;
+		play(audioSrc);
+		onClick();
+	}, [disabled, status, onClick, audioSrc]);
 
-  useKey(shortcut, handleClick, {}, [handleClick]);
-  const large = big ?? isScript(text);
+	useKey(
+		(event) =>
+			event.key === shortcut && !event.repeat && !event.altKey &&
+			!event.ctrlKey && !event.metaKey &&
+			!(event.target instanceof HTMLElement &&
+				event.target.closest(
+					"input, textarea, select, [contenteditable=true]",
+				)) &&
+			!document.querySelector('[role="dialog"][data-state="open"]'),
+		handleClick,
+		{},
+		[handleClick, shortcut],
+	);
+	const large = big ?? isScript(text);
+	const verdict = selected && (status === "correct" || status === "wrong");
 
-  return (
-    <div
-      onClick={handleClick}
-      className={cn(
-        // The lip is a box-shadow rather than a thicker bottom border: pressing sinks the card
-        // without changing its height, so the cards listed below it (ASSIST) stay put.
-        "cursor-pointer select-none rounded-2xl border-2 bg-white p-3.5 shadow-[0_2px_0_0_hsl(var(--border))] transition-[transform,box-shadow,background-color,border-color] duration-100 ease-out hover:bg-slate-50 active:translate-y-[2px] active:shadow-none sm:p-4 lg:p-6",
-        layout === "grid"
-          ? "flex min-h-[88px] items-center justify-center sm:min-h-[96px]"
-          : "flex w-full items-center justify-between",
-        selected && "border-sky-400 bg-sky-50 shadow-[0_2px_0_0_#38bdf8]",
-        selected &&
-          status === "correct" &&
-          "border-emerald-500 bg-emerald-50 shadow-[0_2px_0_0_#10b981]",
-        selected &&
-          status === "wrong" &&
-          "animate-[shake_.4s_ease-in-out] border-rose-500 bg-rose-50 shadow-[0_2px_0_0_#f43f5e]",
-        disabled && "pointer-events-none opacity-60"
-      )}
-    >
-      {imageSrc && (
-        <div className="relative mb-4 aspect-square max-h-[80px] w-full lg:max-h-[150px]">
-          <Image src={imageSrc} fill alt={text} />
-        </div>
-      )}
-      <p
-        className={cn(
-          "text-center font-bold tracking-tight text-neutral-800 [overflow-wrap:anywhere] [word-break:keep-all]",
-          large
-            ? "kana text-3xl leading-none lg:text-4xl"
-            : layout === "grid"
-              ? "text-lg font-black lg:text-2xl"
-              : "text-base font-bold lg:text-xl",
-          selected && "text-sky-600",
-          selected && status === "correct" && "text-emerald-600",
-          selected && status === "wrong" && "text-rose-600"
-        )}
-      >
-        {text}
-      </p>
-      {layout === "list" && (
-        <div
-          className={cn(
-            "flex h-7 w-7 flex-none items-center justify-center rounded-lg border-2 text-xs font-black text-neutral-400",
-            selected && "border-sky-400 bg-sky-100 text-sky-600",
-            selected &&
-              status === "correct" &&
-              "border-emerald-500 bg-emerald-100 text-emerald-600",
-            selected &&
-              status === "wrong" &&
-              "border-rose-500 bg-rose-100 text-rose-600"
-          )}
-        >
-          {shortcut}
-        </div>
-      )}
-    </div>
-  );
+	return (
+		<button
+			type="button"
+			onClick={handleClick}
+			disabled={disabled}
+			aria-pressed={!!selected}
+			aria-label={`${shortcut}. ${text}`}
+			data-status={selected ? status : undefined}
+			className={cn(
+				"game-choice flex min-h-24 w-full items-center gap-4 p-4 text-foreground sm:p-5",
+				layout === "grid" &&
+					"min-h-36 flex-col justify-center pb-10 sm:min-h-40",
+				selected && status === "wrong" &&
+					"animate-[shake_220ms_ease-in-out] motion-reduce:animate-none",
+				disabled && "cursor-not-allowed opacity-60",
+			)}
+		>
+			{imageSrc && (
+				<span className="relative block h-24 w-24 shrink-0">
+					<Image
+						src={imageSrc}
+						fill
+						alt=""
+						sizes="96px"
+						className="object-contain"
+					/>
+				</span>
+			)}
+			<span
+				className={cn(
+					"min-w-0 flex-1 font-bold [overflow-wrap:anywhere] [word-break:keep-all]",
+					large
+						? "text-4xl leading-tight sm:text-5xl"
+						: "text-base leading-relaxed sm:text-xl",
+					layout === "grid" ? "text-center" : "text-left",
+				)}
+			>
+				{text}
+			</span>
+			<span
+				className={cn(
+					"flex h-7 min-w-7 shrink-0 items-center justify-center rounded-lg bg-muted px-1 text-xs font-extrabold text-muted-foreground",
+					layout === "grid" && "absolute bottom-3 right-3",
+					selected && "bg-white text-sky-700",
+					verdict && status === "correct" && "text-green-700",
+					verdict && status === "wrong" && "text-rose-700",
+				)}
+			>
+				{selected
+					? status === "wrong"
+						? <X size={18} aria-hidden />
+						: <Check size={18} aria-hidden />
+					: shortcut}
+			</span>
+		</button>
+	);
 };

@@ -1,3 +1,6 @@
+import { PageHeader } from "@/components/page-header";
+import { BrandIcon } from "@/components/brand-icon";
+import { Mascot } from "@/components/mascot";
 import { auth } from "@/lib/session";
 import { redirect } from "next/navigation";
 
@@ -13,52 +16,72 @@ import { giftTarget } from "@/lib/economy";
 import { Items } from "./items";
 
 const ShopPage = async () => {
-  const { userId } = await auth.protect().then((s) => ({ userId: s.user.id }));
-  const [userProgress, userSubscription, ownedRows, partner] = await Promise.all([
-    getUserProgress(),
-    getUserSubscription(),
-    db.select().from(userItems).where(eq(userItems.userId, userId)),
-    giftTarget(userId),
-  ]);
+	const { userId } = await auth.protect().then((s) => ({
+		userId: s.user.id,
+	}));
+	const [userProgress, userSubscription, ownedRows, partner] = await Promise
+		.all([
+			getUserProgress(),
+			getUserSubscription(),
+			db.select().from(userItems).where(eq(userItems.userId, userId)),
+			giftTarget(userId),
+		]);
 
-  if (!userProgress || !userProgress.activeCourse) redirect("/courses");
-  const owned = Object.fromEntries(ownedRows.map((r) => [r.itemKey, r.qty]));
+	if (!userProgress || !userProgress.activeCourse) redirect("/courses");
+	const owned = Object.fromEntries(ownedRows.map((r) => [r.itemKey, r.qty]));
 
-  const isPro = !!userSubscription?.isActive;
+	const isPro = !!userSubscription?.isActive;
 
-  return (
-    <div className="flex flex-row-reverse gap-[48px] px-4 sm:px-6">
-      <StickyWrapper>
-        <UserProgress
-          activeCourse={userProgress.activeCourse}
-          hearts={userProgress.hearts}
-          points={userProgress.points}
-          gems={userProgress.gems}
-          hasActiveSubscription={isPro}
-        />
-      </StickyWrapper>
+	return (
+		<div className="flex flex-row-reverse gap-8">
+			<StickyWrapper>
+				<UserProgress
+					activeCourse={userProgress.activeCourse}
+					hearts={userProgress.hearts}
+					points={userProgress.points}
+					gems={userProgress.gems}
+					hasActiveSubscription={isPro}
+				/>
+			</StickyWrapper>
 
-      <FeedWrapper>
-        <div className="flex w-full flex-col items-center">
-          <div className="mb-4 flex w-full flex-col items-center text-center lg:mb-6">
-            <h1 className="text-xl font-black tracking-tight text-neutral-800 lg:text-2xl">
-              상점
-            </h1>
-            <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
-              퀘스트로 모은 젬으로 아이템을 사세요.
-            </p>
-          </div>
+			<FeedWrapper>
+				<div className="flex w-full flex-col items-center">
+					<div className="w-full">
+						<PageHeader
+							title="상점"
+							description="학습으로 모은 젬으로 나만의 아이템을 골라보세요."
+							icon="shop"
+						/>
+					</div>
+					<section className="game-panel mb-6 flex w-full flex-wrap items-center gap-5 p-5 sm:p-6">
+						<Mascot pose="wave" className="h-24 w-24 shrink-0" />
+						<div className="min-w-0 flex-1 basis-48">
+							<h2 className="text-xl font-extrabold">
+								나의 젬 지갑
+							</h2>
+							<p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+								보유 아이템은 프로필에서 장착할 수 있어요.
+							</p>
+							<div className="mt-3 flex items-center gap-2 text-xl font-black tabular-nums">
+								<BrandIcon name="gem" className="h-7 w-7" />
+								{userProgress.gems}{" "}
+								<span className="text-sm font-bold text-muted-foreground">
+									젬
+								</span>
+							</div>
+						</div>
+					</section>
 
-          <Items
-            gems={userProgress.gems}
-            owned={owned}
-            hasActiveSubscription={isPro}
-            partner={partner}
-          />
-        </div>
-      </FeedWrapper>
-    </div>
-  );
+					<Items
+						gems={userProgress.gems}
+						owned={owned}
+						hasActiveSubscription={isPro}
+						partner={partner}
+					/>
+				</div>
+			</FeedWrapper>
+		</div>
+	);
 };
 
 export default ShopPage;
