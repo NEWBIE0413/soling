@@ -33,3 +33,10 @@ export const joinBlanks = (blanks: string[], answers: string[]) =>
   blanks.map((b, i) => `${b}: ${(answers[i] ?? "").trim()}`).join("\n");
 
 export const MAX_SUBMISSION_CHARS = 5000;
+
+/**
+ * Feedback the learner hasn't read: graded, and graded after they last opened it. A grader may revise
+ * feedback (e.g. add a translation); the revision is news again. Same rule as unreadFeedback in lib/writing.ts.
+ */
+export const isUnread = (s: { score: number | null; gradedAt: Date | null; seenAt: Date | null }) =>
+  s.score !== null && (!s.seenAt || (!!s.gradedAt && s.gradedAt > s.seenAt));
