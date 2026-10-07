@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { and, eq, isNotNull, isNull, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { ChevronRight } from "lucide-react";
 import { BrandIcon } from "@/components/brand-icon";
 
@@ -10,7 +10,7 @@ import {
 	getUserProgress,
 } from "@/db/queries";
 import { writingSubmissions } from "@/db/schema";
-import { listTasks } from "@/lib/writing";
+import { listTasks, unreadFeedback } from "@/lib/writing";
 
 /*
  One card above the unit path: 약점 복습. It is a "different kind of thing to do" rather than a
@@ -94,9 +94,7 @@ async function writingSummary(
 			done: sql<
 				number
 			>`count(distinct ${writingSubmissions.promptId})::int`,
-			fresh: sql<number>`(count(*) filter (where ${
-				isNotNull(writingSubmissions.score)
-			} and ${isNull(writingSubmissions.seenAt)}))::int`,
+			fresh: sql<number>`(count(*) filter (where ${unreadFeedback}))::int`,
 		})
 		.from(writingSubmissions)
 		.where(mine);

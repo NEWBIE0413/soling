@@ -1,5 +1,8 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { sql } from "drizzle-orm";
+
+import { writingSubmissions } from "@/db/schema";
 
 import { courseRoot } from "@/lib/content";
 import type { WritingTask } from "@/lib/writing-shared";
@@ -32,6 +35,9 @@ const publicView = ({ rubric: _rubric, ...task }: TaskFile): WritingTask => task
 
 export const listTasks = (course: string | null | undefined): WritingTask[] =>
   course ? readTaskFiles(course).map(publicView) : [];
+
+/** SQL form of isUnread (lib/writing-shared.ts): graded, and graded after the learner last opened it. */
+export const unreadFeedback = sql`${writingSubmissions.score} is not null and (${writingSubmissions.seenAt} is null or ${writingSubmissions.gradedAt} > ${writingSubmissions.seenAt})`;
 
 export const getTask = (course: string | null | undefined, id: string): WritingTask | null =>
   listTasks(course).find((t) => t.id === id) ?? null;

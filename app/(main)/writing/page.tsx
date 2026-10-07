@@ -15,6 +15,7 @@ import { writingSubmissions } from "@/db/schema";
 import { auth } from "@/lib/session";
 import { cn } from "@/lib/utils";
 import { listTasks } from "@/lib/writing";
+import { isUnread } from "@/lib/writing-shared";
 
 // 쓰기 과제 목록: 활성 코스의 과제를 작성자가 정한 순서대로, 과제마다 가장 최근 답안의 상태와 함께.
 const WritingPage = async () => {
@@ -85,7 +86,7 @@ const WritingPage = async () => {
 								const s = latest.get(t.id);
 								const graded = s?.score !== null &&
 									s?.score !== undefined;
-								const fresh = graded && !s?.seenAt;
+								const fresh = !!s && isUnread(s);
 								return (
 									<li key={t.id}>
 										<Link

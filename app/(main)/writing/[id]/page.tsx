@@ -2,7 +2,7 @@ import { PageHeader } from "@/components/page-header";
 import { CompanionFeedback } from "@/components/companion-feedback";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { and, desc, eq, isNotNull, isNull } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { ArrowLeft } from "lucide-react";
 
 import { FeedWrapper } from "@/components/feed-wrapper";
@@ -11,8 +11,8 @@ import db from "@/db/drizzle";
 import { getUserProgress } from "@/db/queries";
 import { writingSubmissions } from "@/db/schema";
 import { auth } from "@/lib/session";
-import { getTask } from "@/lib/writing";
-import { blanksOf, countChars } from "@/lib/writing-shared";
+import { getTask, unreadFeedback } from "@/lib/writing";
+import { blanksOf, countChars, isUnread } from "@/lib/writing-shared";
 
 import { WritingEditor } from "./writing-editor";
 
@@ -46,13 +46,9 @@ const WritingTaskPage = async (
 	const history = await db.select().from(writingSubmissions).where(mine)
 		.orderBy(desc(writingSubmissions.createdAt));
 	// opening the task is reading its feedback: clear the "첨삭 도착" badge
-	if (history.some((h) => h.score !== null && !h.seenAt)) {
+	if (history.some(isUnread)) {
 		await db.update(writingSubmissions).set({ seenAt: new Date() }).where(
-			and(
-				mine,
-				isNotNull(writingSubmissions.score),
-				isNull(writingSubmissions.seenAt),
-			),
+			and(mine, unreadFeedback),
 		);
 	}
 	const range = task.minChars || task.maxChars
