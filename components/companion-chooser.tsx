@@ -56,7 +56,7 @@ export function CompanionChooser({ initialChoice, onboarding = false }: {
 			<header className="mb-8">
 				{onboarding
 					? (
-						<p className="mb-8 text-2xl font-black tracking-tight text-[var(--companion-ink)]">
+						<p className="mb-8 text-2xl font-black tracking-tight text-[#613c27]">
 							soling
 						</p>
 					)

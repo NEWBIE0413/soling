@@ -6,6 +6,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { profileImage } from "@/lib/avatars";
 import {
 	createCoupleAction,
 	joinCoupleAction,
@@ -27,7 +28,7 @@ export const CoupleCard = ({ couple }: { couple: Couple }) => {
 			<div className="w-full game-panel p-5 sm:p-6">
 				<div className="flex flex-wrap items-center gap-4">
 					<Image
-						src={couple.partner.image}
+						src={profileImage(couple.partner.image)}
 						alt={couple.partner.name}
 						width={44}
 						height={44}

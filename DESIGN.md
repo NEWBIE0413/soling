@@ -4,10 +4,13 @@
 
 A bright, tactile learning game, not a dashboard. The product name is `soling`
 (솔링). Its palette and cute mascot must have an identity distinct from Duolingo.
-Three companions share the app: Mocha the brown quokka (모카), Lumi the blue seal
+Three companions share the app: Mocha the brown bear (모카), Lumi the blue seal
 (루미), and Boni the purple bunny (보니). The learner chooses a companion on first
 use and can change it in the profile. That character remains their guide through
 greetings, answer feedback, completion, kana practice, and writing feedback.
+Mocha is the fixed brand representative on logos and favicons, independent of the
+learner's companion theme. His persisted internal ID remains `quokka` so existing
+preferences keep working.
 Learning progress is the focal point; illustrations reward effort rather than
 compete with a question. Duolingo is the quality benchmark, not an asset source.
 Apple Design supplies immediate press feedback, spatial continuity, interruptible
@@ -15,6 +18,12 @@ controls and reduced-motion alternatives. Build on the existing Tailwind/Radix
 components, not a second UI framework.
 
 ## 2. Color
+
+Profile portraits use the same SVG art, cropped into soft circular backgrounds.
+Avatar choice is independent of the learning companion. Auth and progress image
+fields update together; custom photos and existing cosmetic frames are retained.
+The old default green portrait displays as Mocha without a database migration.
+Next metadata serves a vector favicon and a 180px PNG Apple touch icon.
 
 | Role          | Token / value                   | Use                                |
 | ------------- | ------------------------------- | ---------------------------------- |

@@ -6,9 +6,12 @@ import { LogOut } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { signOut, useSession } from "@/lib/auth-client";
+import { profileImage } from "@/lib/avatars";
 
 // Avatar + name + sign out; replaces Clerk's <UserButton />.
-export const UserButton = ({ compact }: { compact?: boolean }) => {
+export const UserButton = (
+	{ compact, imageSrc }: { compact?: boolean; imageSrc?: string },
+) => {
 	const router = useRouter();
 	const { data, isPending } = useSession();
 	if (isPending || !data) return null;
@@ -16,7 +19,7 @@ export const UserButton = ({ compact }: { compact?: boolean }) => {
 	return (
 		<div className="flex min-w-0 items-center gap-x-2">
 			<Image
-				src={u.image || "/mascot.svg"}
+				src={profileImage(imageSrc ?? u.image)}
 				alt={u.name}
 				width={32}
 				height={32}

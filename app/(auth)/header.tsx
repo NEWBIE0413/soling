@@ -10,8 +10,8 @@ export const Header = () => (
 				aria-label="솔링 홈"
 				className="flex items-center gap-1"
 			>
-				<Mascot className="h-12 w-12" />
-				<span className="text-2xl font-black tracking-[-.04em] text-[var(--companion-ink)]">
+				<Mascot character="quokka" className="h-12 w-12" />
+				<span className="text-2xl font-black tracking-[-.04em] text-[#613c27]">
 					soling
 				</span>
 			</Link>

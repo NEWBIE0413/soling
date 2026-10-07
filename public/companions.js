@@ -6,7 +6,7 @@ export const COMPANION_IDS = ["quokka", "seal", "bunny"];
 export const COMPANIONS = {
 	quokka: {
 		name: "모카",
-		animal: "쿼카",
+		animal: "곰",
 		theme: "따뜻한 갈색",
 		personality: "작은 시도도 놓치지 않는 다정한 친구",
 		hello: "반가워! 나는 모카야. 한 걸음씩 같이 가 보자.",

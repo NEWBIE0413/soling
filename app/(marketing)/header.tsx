@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+import { Mascot } from "@/components/mascot";
 import Link from "next/link";
 
 import { UserButton } from "@/components/auth/user-button";
@@ -19,14 +19,9 @@ export const Header = () => {
 						prefetch
 						className="flex items-center gap-x-3 pb-7 pl-4 pt-8"
 					>
-						<Image
-							src="/mascot.svg"
-							alt="Mascot"
-							height={40}
-							width={40}
-						/>
+						<Mascot character="quokka" className="h-10 w-10" />
 
-						<h1 className="text-2xl font-extrabold tracking-wide text-green-600">
+						<h1 className="text-2xl font-extrabold tracking-wide text-[#613c27]">
 							soling
 						</h1>
 					</Link>

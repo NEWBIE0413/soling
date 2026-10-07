@@ -6,6 +6,7 @@ import db from "@/db/drizzle";
 import { userProgress } from "@/db/schema";
 import { currentUser } from "@/lib/session";
 import { isCompanion } from "@/public/companions";
+import { profileImage } from "@/lib/avatars";
 
 export async function chooseCompanion(
 	value: unknown,
@@ -19,7 +20,7 @@ export async function chooseCompanion(
 	await db.insert(userProgress).values({
 		userId: user.id,
 		userName: user.name || "학습자",
-		userImageSrc: user.image || "/mascot.svg",
+		userImageSrc: profileImage(user.image),
 		equipped: { companion: value },
 	}).onConflictDoUpdate({
 		target: userProgress.userId,

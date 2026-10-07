@@ -9,6 +9,8 @@ import { BrandIcon } from "@/components/brand-icon";
 import { PageHeader } from "@/components/page-header";
 import { Mascot } from "@/components/mascot";
 import { useCompanion } from "@/components/companion-provider";
+import { AvatarPicker } from "@/components/avatar-picker";
+import { profileImage } from "@/lib/avatars";
 import { toast } from "sonner";
 
 import { equipItemAction, updateUserNameAction } from "@/actions/economy";
@@ -63,6 +65,7 @@ export const ProfileView = ({
 	const [pending, startTransition] = useTransition();
 	const [equipped, setEquipped] = useState(initialEquipped);
 	const [name, setName] = useState(targetName);
+	const [avatar, setAvatar] = useState(imageSrc);
 	const isSelf = targetUserId === selfUserId;
 	const companion = useCompanion();
 
@@ -125,7 +128,7 @@ export const ProfileView = ({
 			<div className="game-panel flex w-full flex-col items-center gap-2 p-6 sm:p-8">
 				<AvatarFrame frame={equipped.frame}>
 					<Image
-						src={imageSrc}
+						src={profileImage(isSelf ? avatar : imageSrc)}
 						alt={targetName}
 						className="rounded-full"
 						height={68}
@@ -156,6 +159,7 @@ export const ProfileView = ({
 						{equippedTitle}
 					</p>
 				)}
+				{isSelf && <AvatarPicker image={avatar} onSaved={setAvatar} />}
 			</div>
 
 			{isSelf && (
@@ -265,7 +269,7 @@ export const ProfileView = ({
 			{couple?.partner && (
 				<div className="mt-3.5 flex w-full items-center gap-3.5 rounded-2xl border-2 border-rose-200 bg-rose-50/60 p-3.5 shadow-sm sm:p-4">
 					<Image
-						src={couple.partner.image}
+						src={profileImage(couple.partner.image)}
 						alt=""
 						height={44}
 						width={44}

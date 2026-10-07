@@ -17,6 +17,7 @@ import {
 } from "@/db/queries";
 import { shopItem } from "@/lib/economy";
 import { getWeeklyTop } from "@/lib/leaderboard";
+import { profileImage } from "@/lib/avatars";
 import Link from "next/link";
 
 const equippedRing = (frame?: string) => {
@@ -184,7 +185,9 @@ const LeaderboardPage = async ({
 										)}
 									>
 										<AvatarImage
-											src={userProgress.userImageSrc}
+											src={profileImage(
+												userProgress.userImageSrc,
+											)}
 											className="object-cover"
 										/>
 									</Avatar>
