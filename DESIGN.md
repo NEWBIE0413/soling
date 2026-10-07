@@ -150,7 +150,26 @@ overflow. Shared primitives: stack, cluster, content-limiter, sticky-aside.
 Controls use retargetable CSS transitions; finite celebration art uses keyframes
 on transform/opacity only. One signature celebration lasts about 1100ms; ordinary
 navigation never waits for it. Subsequent reward transitions are 180-220ms.
-No permanent decorative motion. Audio only follows a learning action and remains
+The user-approved exception to permanent decorative motion is the small companion
+habitat on the learning home (including kana home). Mocha has a warm forest,
+Lumi a quiet shoreline, and Boni a lavender evening garden. Only leaves, clouds,
+ripples and grass move; the surrounding layout and question/answer surfaces stay
+still. CSS transform/opacity cycles last 16-24 seconds, with at most six moving
+groups per scene. Completion reuses the scene for one 1600ms reaction, then rests.
+IntersectionObserver and visibilitychange pause the entire scene out of view or
+in a hidden tab; reduced motion renders its static final artwork. The scene
+reserves its dimensions, ignores pointer input, and adds no animation dependency.
+
+Art uses the existing companion washes plus muted nature ramps: forest
+#e9ead6/#b5be96/#85946e and warm light #f5dba4; shoreline
+#edf5f8/#d0e4ee/#9fbfce; evening #f0e9f6/#d2c6e2/#a695be.
+Shared source lives in `public/companion-habitat.js` and its CSS counterpart.
+Mechanism references: [huashu-art-motion](https://github.com/alchaincyf/huashu-art-motion)
+(fixed composition with separately moving environmental motifs) and
+[ShapeGrid](https://reactbits.dev/backgrounds/shape-grid) (visibility lifecycle).
+Only those principles are used; no engine, component source or demo assets are copied.
+
+Audio only follows a learning action and remains
 separate from purely visual navigation. Reduced motion removes translation,
 rotation and scaling but preserves readable final state and short fades.
 No additional animation runtime is necessary for these finite vector scenes.

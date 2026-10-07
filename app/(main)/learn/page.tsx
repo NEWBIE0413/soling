@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { BrandIcon } from "@/components/brand-icon";
 import { FeedWrapper } from "@/components/feed-wrapper";
-import { Mascot } from "@/components/mascot";
+import { CompanionScene } from "@/components/companion-scene";
 import { StickyWrapper } from "@/components/sticky-wrapper";
 import { Button } from "@/components/ui/button";
 import { UserProgress } from "@/components/user-progress";
@@ -86,7 +86,14 @@ export default async function LearnPage(
 								? "여기까지, 정말 잘했어요!"
 								: percentage > 0
 								? "배우던 곳에서 계속해요"
-								: `${friend.name}와 한 걸음 더`}
+								: (
+									<>
+										{friend.name}와{" "}
+										<span className="whitespace-nowrap">
+											한 걸음 더
+										</span>
+									</>
+								)}
 						</h2>
 						<p className="mt-2 text-sm leading-relaxed text-muted-foreground">
 							{courseFinished ? friend.complete : friend.welcome}
@@ -117,10 +124,7 @@ export default async function LearnPage(
 							</Link>
 						</Button>
 					</div>
-					<Mascot
-						pose="wave"
-						className="w-28 shrink-0 self-end sm:w-40"
-					/>
+					<CompanionScene />
 				</section>
 				<LearnExtras />
 				<div className="mt-8 space-y-5">

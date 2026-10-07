@@ -31,6 +31,7 @@
 */
 
 @import "../public/companion-themes.css";
+@import "../public/companion-habitat.css";
 
 @tailwind base;
 @tailwind components;
@@ -87,21 +88,6 @@ a:active .lesson-node {
   flex-shrink: 0;
   margin: 4px auto;
 }
-.reward-scene::before {
-  content: "";
-  position: absolute;
-  inset: 24px 20px 12px;
-  border-radius: 50%;
-  background: var(--game-green-soft);
-}
-.reward-scene-perfect::before {
-  background: #fff5d8;
-}
-.reward-scene .solingo-mascot {
-  position: relative;
-  width: 240px;
-  margin: 10px auto 0;
-}
 .reward-spark {
   position: absolute;
   z-index: 1;
@@ -157,15 +143,9 @@ a:active .lesson-node {
     padding: 24px 20px;
     gap: 4px;
   }
-  .learning-hero > .solingo-mascot {
-    width: 88px;
-  }
   .reward-scene {
     width: 230px;
     height: 208px;
-  }
-  .reward-scene .solingo-mascot {
-    width: 210px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

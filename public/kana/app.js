@@ -1,12 +1,14 @@
 /* Solingo engine. Knows nothing about any language: everything comes from courses/<id>.json (see docs/COURSE.md). */
 import { companionArt } from "../companion-art.js";
 import { COMPANIONS, isCompanion } from "../companions.js";
+import { habitatMarkup, observeHabitat } from "../companion-habitat.js";
 
 let companionId = new URLSearchParams(location.search).get("companion");
 if (!isCompanion(companionId)) companionId = "quokka";
 document.documentElement.dataset.companion = companionId;
 const friend = () => COMPANIONS[companionId];
 const portrait = (pose = "idle") => `<svg class="companion-portrait" data-character="${companionId}" viewBox="0 0 240 220" fill="none" aria-hidden="true">${companionArt(companionId, pose)}</svg>`;
+let stopHomeHabitat = null, stopRewardHabitat = null;
 
 // ================= course =================
 let COURSE=null, ORDER=[], FREE=new Set(), WORDS=[], SETS=[], JOIN='', AUDIO=null, AUDIO_DIR='';
@@ -81,11 +83,11 @@ function decorateStep(b){
   $('#stage').scrollTop=0;
 }
 function mascot(perfect){
-  return `<div class="reward-scene ${perfect?'perfect':''}"><svg class="solingo-mascot" data-character="${companionId}" viewBox="0 0 240 220" fill="none" aria-hidden="true" focusable="false">
+  return `<div class="reward-scene ${perfect?'perfect':''}"><div class="companion-scene" data-habitat="${companionId}" data-scene="celebrate" data-paused="true">${habitatMarkup(companionId)}<svg class="solingo-mascot" data-character="${companionId}" viewBox="0 0 240 220" fill="none" aria-hidden="true" focusable="false">
     <g class="reward-star"><path d="m20 34 4 8 9 1-7 7 2 9-8-4-8 4 2-9-7-7 9-1Z" fill="#ffc83d"/></g>
     <g class="reward-star"><path d="m217 55 4 8 9 1-7 7 2 9-8-4-8 4 2-9-7-7 9-1Z" fill="#ffc83d"/></g>
     ${perfect?'<g class="reward-star"><path d="m194 11 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z" fill="#1ca7e8"/></g>':''}
-    ${companionArt(companionId, "celebrate")}</svg></div>`;
+    ${companionArt(companionId, "celebrate")}</svg></div></div>`;
 }
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const pick=(a,n)=>shuffle(a).slice(0,n);
@@ -177,7 +179,9 @@ function similar(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;if(a===b||a.include
 // ================= home =================
 function savedSession(){try{const s=JSON.parse(localStorage.getItem(SKEY()));if(!(s&&s.si<s.steps.length))return null;if((LESSON?LESSON.id:null)!==(s.lesson||null))return null;return s}catch{return null}}
 function renderHome(){
-  $('#companion-home').innerHTML=`${portrait()}<div><strong>${friend().name}와 함께 글자 연습</strong><p>${friend().welcome}</p></div>`;
+  stopHomeHabitat?.(); stopRewardHabitat?.(); stopRewardHabitat=null;
+  $('#companion-home').innerHTML=`<div class="companion-scene" data-habitat="${companionId}" data-scene="home" data-paused="true">${habitatMarkup(companionId)}${portrait()}</div><div><strong>${friend().name}와 함께 글자 연습</strong><p>${friend().welcome}</p></div>`;
+  stopHomeHabitat=observeHabitat($('#companion-home .companion-scene'));
   let streak=0;for(let i=0;;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);if(S.days[k])streak++;else if(i===0)continue;else break}
   const L=learned();
   $('#h-streak').textContent=streak;$('#h-xp').textContent=S.xp;$('#h-known').textContent=L.filter(k=>lvl(k)>=3).length;
@@ -236,13 +240,15 @@ let persistT=null;
 function persist(){const doc={steps,si,score,combo,newK,ts:Date.now(),lesson:LESSON?LESSON.id:null};try{localStorage.setItem(SKEY(),JSON.stringify(doc))}catch{}clearTimeout(persistT);persistT=setTimeout(()=>apiPut({session:doc}),300)}
 function clearPersist(){try{localStorage.removeItem(SKEY())}catch{}clearTimeout(persistT);apiPut({session:null})}
 function startSession(){
+  stopHomeHabitat?.(); stopHomeHabitat=null;
+  stopRewardHabitat?.(); stopRewardHabitat=null;
   const ss=savedSession();
   if(ss){({steps,si,score,combo,newK}=ss);newK=newK||[]}else{steps=buildSession();si=0;score={ok:0,no:0};combo=0}
   $('#lesson').classList.add('on');$('#home').inert=true;$('#stage').innerHTML='';renderCombo();renderStep();persist();
   tellParent('solingo:session-start');
 }
 $('#start').addEventListener('click',()=>{sfx.tap();if(S.sound===null)askPerm(startSession);else{if(S.sound){soundOn=true;unlockAudio()}startSession()}});
-$('#l-x').addEventListener('click',()=>{persist();save();if(LESSON){tellParent('solingo:exit');return}state='idle';$('#lesson').classList.remove('on');$('#home').inert=false;renderHome();$('#start').focus();tellParent('solingo:session-end');toast('저장했어요. 이어서 할 수 있어요')});
+$('#l-x').addEventListener('click',()=>{persist();save();stopRewardHabitat?.();stopRewardHabitat=null;if(LESSON){tellParent('solingo:exit');return}state='idle';$('#lesson').classList.remove('on');$('#home').inert=false;renderHome();$('#start').focus();tellParent('solingo:session-end');toast('저장했어요. 이어서 할 수 있어요')});
 function setFoot(mode,label,verdict=''){const f=$('#l-foot');f.className='foot'+(mode?' '+mode:'');const b=$('#l-btn');b.textContent=label;b.className='btn lg '+(mode==='no'?'danger':'secondary');$('#l-verdict').innerHTML=verdict+(verdict?`<div class="companion-verdict">${portrait(mode==='no'?'encourage':'celebrate')}<span>${friend().name} · ${mode==='no'?friend().encourage:friend().correct}</span></div>`:'')}
 function lock(v){const b=$('#l-btn');b.disabled=v}
 function renderStep(){
@@ -268,7 +274,7 @@ function onResult(r){
 }
 $('#l-btn').addEventListener('click',e=>{
   const b=e.currentTarget; if(b.disabled)return; sfx.tap();wave(b);
-  if(state==='home'){state='idle';clearPersist();if(LESSON){tellParent('solingo:lesson-done');return}renderHome();startSession();return}
+  if(state==='home'){state='idle';clearPersist();stopRewardHabitat?.();stopRewardHabitat=null;if(LESSON){tellParent('solingo:lesson-done');return}renderHome();startSession();return}
   if(state==='answer'){onResult(checkFn?checkFn():null);return}
   advance();
 });
@@ -385,6 +391,8 @@ function finish(){
   ${newK.length?`<div class="tiny" style="margin-top:10px">오늘 새로 배운 글자</div><div class="newk kana">${newK.map(k=>`<span>${k}</span>`).join('')}</div>`:''}
   <div class="result"><div class="rcard xp"><div class="h">획득 XP</div><div class="v">${icon('xp')} ${xp}</div></div><div class="rcard acc"><div class="h">정확도</div><div class="v">${pct}%</div></div><div class="rcard streak"><div class="h">연속일</div><div class="v">${icon('streak')} ${streak}</div></div></div>
   <p class="tiny" style="margin-top:16px">${pct<75?'한 세션 더 하면 새 글자 대신 복습이 나와요. 그게 맞아요.':'좋아요. 한 세션 더 하면 다음 글자가 열립니다.'}</p><p class="tiny" id="save-status" role="status">계정에 학습 기록을 저장하고 있어요…</p></div>`;
+  stopRewardHabitat?.();
+  stopRewardHabitat=observeHabitat($('.reward-scene .companion-scene',b));
   $('#stage').scrollTop=0;$('h2',b).focus({preventScroll:true});
   setFoot('','계속'); lock(false); state='home';
 }

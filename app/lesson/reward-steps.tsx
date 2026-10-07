@@ -7,7 +7,7 @@ import { Check, Clock3, Snowflake } from "lucide-react";
 import { claimQuestAction } from "@/actions/economy";
 import { BrandIcon } from "@/components/brand-icon";
 import { chime } from "@/components/celebrate";
-import { Mascot } from "@/components/mascot";
+import { CompanionScene } from "@/components/companion-scene";
 import { useCompanion } from "@/components/companion-provider";
 import { Button } from "@/components/ui/button";
 import type { QuestView } from "@/lib/economy-defs";
@@ -136,7 +136,7 @@ export const RewardSteps = (
 					{step === "badges" && done && (
 						<>
 							<div className="reward-scene reward-scene-perfect">
-								<Mascot pose="celebrate" />
+								<CompanionScene mode="celebrate" />
 								<BrandIcon
 									name="trophy"
 									className="reward-spark"
@@ -241,8 +241,8 @@ function Summary({ stats, bonus }: { stats: LessonStats; bonus?: Bonus }) {
 					perfect && "reward-scene-perfect",
 				)}
 			>
-				<Mascot
-					pose="celebrate"
+				<CompanionScene
+					mode="celebrate"
 					label={`두 팔을 들고 축하하는 ${companion.name}`}
 				/>
 				<BrandIcon name="star" className="reward-spark" />

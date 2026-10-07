@@ -1,0 +1,125 @@
+.companion-scene {
+  position: relative;
+  flex: none;
+  width: clamp(92px, calc(100vw - 262px), 128px);
+  aspect-ratio: 300 / 260;
+  align-self: flex-end;
+  pointer-events: none;
+  isolation: isolate;
+}
+.habitat-drawing,
+.habitat-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.companion-scene > .solingo-mascot,
+.companion-scene > .companion-portrait {
+  position: absolute;
+  z-index: 1;
+  width: 76%;
+  height: auto;
+  left: 12%;
+  bottom: 4%;
+  margin: 0;
+}
+.reward-scene > .companion-scene {
+  width: 100%;
+  height: 100%;
+}
+.companion-scene[data-scene="celebrate"] > .solingo-mascot {
+  width: 88%;
+  left: 6%;
+  bottom: 2%;
+}
+.habitat-sway,
+.habitat-grass {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: habitat-sway 18s ease-in-out infinite;
+}
+.habitat-cloud {
+  animation: habitat-cloud 24s ease-in-out infinite;
+}
+.habitat-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: habitat-ripple 16s ease-in-out infinite;
+}
+.habitat-leaf {
+  animation: habitat-leaf 20s ease-in-out infinite;
+}
+.habitat-light,
+.habitat-glint {
+  animation: habitat-light 22s ease-in-out infinite;
+}
+.habitat-late {
+  animation-delay: -8s;
+}
+.companion-scene[data-scene="celebrate"] .habitat-background > [class] {
+  animation-duration: 1600ms;
+  animation-delay: 0ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: both;
+}
+.companion-scene[data-paused="true"] * {
+  animation-play-state: paused !important;
+}
+@keyframes habitat-sway {
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(1.5deg);
+  }
+}
+@keyframes habitat-cloud {
+  0%,
+  100% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}
+@keyframes habitat-ripple {
+  0%,
+  100% {
+    transform: scaleX(0.96);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleX(1.06);
+    opacity: 0.85;
+  }
+}
+@keyframes habitat-leaf {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(5px) rotate(3deg);
+  }
+}
+@keyframes habitat-light {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+@media (min-width: 640px) {
+  .learning-hero > .companion-scene {
+    width: 208px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .companion-scene * {
+    animation: none !important;
+  }
+}
