@@ -1,4 +1,12 @@
 /* Solingo engine. Knows nothing about any language: everything comes from courses/<id>.json (see docs/COURSE.md). */
+import { companionArt } from "../companion-art.js";
+import { COMPANIONS, isCompanion } from "../companions.js";
+
+let companionId = new URLSearchParams(location.search).get("companion");
+if (!isCompanion(companionId)) companionId = "quokka";
+document.documentElement.dataset.companion = companionId;
+const friend = () => COMPANIONS[companionId];
+const portrait = (pose = "idle") => `<svg class="companion-portrait" data-character="${companionId}" viewBox="0 0 240 220" fill="none" aria-hidden="true">${companionArt(companionId, pose)}</svg>`;
 
 // ================= course =================
 let COURSE=null, ORDER=[], FREE=new Set(), WORDS=[], SETS=[], JOIN='', AUDIO=null, AUDIO_DIR='';
@@ -8,7 +16,7 @@ const wordKana=w=>tok(w).filter(k=>!FREE.has(k));
 async function loadCourse(id){
   const c=await (await fetch(`courses/${id}.json?v=9`)).json();
   COURSE=c;ORDER=c.order;FREE=new Set(Object.keys(c.items).filter(k=>c.items[k].free));WORDS=c.words.map(w=>[w.t,w.m]);SETS=c.sets;JOIN=c.tokenize?.joiners||'';
-  document.title=`Solingo · ${c.title}`;
+  document.title=`soling · ${c.title}`;
   // Pre-rendered audio (courses/<id>-audio/index.json maps text → file). Like the clone's per-option mp3s; TTS is only the fallback.
   AUDIO_DIR=c.audio||`courses/${id}-audio/`;
   try{AUDIO=await (await fetch(AUDIO_DIR+'index.json')).json()}catch{AUDIO=null}
@@ -30,7 +38,7 @@ function save(){try{localStorage.setItem(KEY(),JSON.stringify(S))}catch{}
 async function loadState(){
   const local=(()=>{try{return JSON.parse(localStorage.getItem(KEY()))||null}catch{return null}})();
   let remote=null, remoteSession=undefined;
-  try{const r=await fetch(API(),{credentials:'same-origin'});if(r.status===401){location.href='/sign-in?next=/kana';return}if(r.ok){const j=await r.json();remote=j.state;remoteSession=j.session;ONLINE=true}}catch{ONLINE=false}
+  try{const r=await fetch(API(),{credentials:'same-origin'});if(r.status===401){location.href='/sign-in?next=/kana';return}if(r.ok){const j=await r.json();remote=j.state;remoteSession=j.session;ONLINE=true;if(isCompanion(j.companion)){companionId=j.companion;document.documentElement.dataset.companion=companionId}}}catch{ONLINE=false}
   // the account wins; a local mirror is only used when the account has nothing yet (first login on a device that studied offline)
   const base=remote&&Object.keys(remote).length?remote:(local||{});
   S=Object.assign({k:{},w:{},xp:0,days:{},sound:null,voice:null},base);
@@ -55,7 +63,7 @@ function icon(name){
     streak:['#ff9633','#d65d18','<path d="M26 5c3 11 15 17 13 27-1 9-8 12-15 12S9 39 9 30c0-7 5-11 9-15 0 6 3 8 5 8 5-5 3-12 3-18Z"/><path d="M24 27c6 5 8 12 0 14-9-2-5-9 0-14Z" fill="#ffe58d"/>'],
     writing:['#9061cf','#694099','<path d="m12 30 19-20q3-3 6 0l3 3q3 3 0 6L21 38l-12 3Z"/><path d="m28 14 9 9M12 30l9 8" fill="none" stroke="white" stroke-width="3"/>'],
     star:['#ffc83d','#dc9416','<path d="m24 5 6 12 13 2-10 10 2 14-11-7-12 7 2-14L4 19l14-2Z"/>'],
-    check:['#58c900','#409309','<rect x="5" y="5" width="38" height="38" rx="12"/><path d="m13 24 8 8 15-17" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'],
+    check:['var(--companion-primary)','var(--companion-depth)','<rect x="5" y="5" width="38" height="38" rx="12"/><path d="m13 24 8 8 15-17" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'],
     close:['#df5260','#b63448','<rect x="5" y="5" width="38" height="38" rx="12"/><path d="m16 16 16 16m0-16L16 32" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"/>'],
     play:['#1ca7e8','#087bb8','<rect x="5" y="5" width="38" height="38" rx="12"/><path d="m20 14 14 10-14 10Z" fill="white"/>'],
     music:['#9061cf','#694099','<path d="M19 10h20v23h-5V17H24v19h-5Z"/><ellipse cx="14" cy="36" rx="9" ry="7"/><ellipse cx="30" cy="33" rx="9" ry="7"/>'],
@@ -73,26 +81,11 @@ function decorateStep(b){
   $('#stage').scrollTop=0;
 }
 function mascot(perfect){
-  return `<div class="reward-scene ${perfect?'perfect':''}"><svg class="solingo-mascot" viewBox="0 0 240 220" fill="none" aria-hidden="true" focusable="false">
-    <ellipse cx="120" cy="205" rx="61" ry="9" fill="#324238" opacity=".09"/>
+  return `<div class="reward-scene ${perfect?'perfect':''}"><svg class="solingo-mascot" data-character="${companionId}" viewBox="0 0 240 220" fill="none" aria-hidden="true" focusable="false">
     <g class="reward-star"><path d="m20 34 4 8 9 1-7 7 2 9-8-4-8 4 2-9-7-7 9-1Z" fill="#ffc83d"/></g>
     <g class="reward-star"><path d="m217 55 4 8 9 1-7 7 2 9-8-4-8 4 2-9-7-7 9-1Z" fill="#ffc83d"/></g>
     ${perfect?'<g class="reward-star"><path d="m194 11 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1Z" fill="#1ca7e8"/></g>':''}
-    <g class="mascot-character">
-      <g class="mascot-foot-left"><path d="M80 173h23v24c0 7-6 9-15 9H65c-9 0-10-7-4-12l19-10Z" fill="#409309"/><path d="M80 174h23v15H80Z" fill="#58c900"/></g>
-      <g class="mascot-foot-right"><path d="M137 173h23v11l19 10c6 5 5 12-4 12h-23c-9 0-15-2-15-9Z" fill="#409309"/><path d="M137 174h23v15h-23Z" fill="#58c900"/></g>
-      <g class="mascot-arm-left"><path d="M64 103c-20 5-34 16-35 34-1 14 13 20 22 9l21-29Z" fill="#409309"/><path d="M63 100c-19 4-33 14-34 30-1 13 12 19 21 8l20-25Z" fill="#58c900"/><path d="M39 126c3-6 7-10 12-12" stroke="#8ee244" stroke-width="6" stroke-linecap="round"/></g>
-      <g class="mascot-arm-right"><path d="M176 103c20 5 34 16 35 34 1 14-13 20-22 9l-21-29Z" fill="#409309"/><path d="M177 100c19 4 33 14 34 30 1 13-12 19-21 8l-20-25Z" fill="#58c900"/><path d="M201 126c-3-6-7-10-12-12" stroke="#8ee244" stroke-width="6" stroke-linecap="round"/></g>
-      <path d="M57 63c0-21 12-31 33-31h61c21 0 33 10 33 31v95c0 23-11 34-33 34H90c-22 0-33-11-33-34Z" fill="#409309"/>
-      <path d="M55 55c0-21 12-31 33-31h64c21 0 33 10 33 31v95c0 23-11 34-33 34H88c-22 0-33-11-33-34Z" fill="#58c900"/>
-      <path d="M70 51c0-10 7-15 20-15h58" stroke="#8ee244" stroke-width="9" stroke-linecap="round"/>
-      <path d="M99 25c-6-11-1-18 7-12l15 12c-1-16 7-22 12-12l5 12" fill="#58c900"/>
-      <path d="M78 64c6-5 14-6 21-3m42 0c7-3 15-2 21 3" stroke="#214708" stroke-width="5" stroke-linecap="round"/>
-      ${perfect?'<path d="M78 93c2-17 22-17 24 0m36 0c2-17 22-17 24 0" stroke="white" stroke-width="14" stroke-linecap="round"/><path d="M80 94c3-12 17-12 20 0m40 0c3-12 17-12 20 0" stroke="#324238" stroke-width="6" stroke-linecap="round"/>':'<ellipse cx="91" cy="88" rx="18" ry="23" fill="white"/><ellipse cx="149" cy="88" rx="18" ry="23" fill="white"/><ellipse cx="95" cy="91" rx="8" ry="12" fill="#324238"/><ellipse cx="153" cy="91" rx="8" ry="12" fill="#324238"/><circle cx="97" cy="85" r="3" fill="white"/><circle cx="155" cy="85" r="3" fill="white"/>'}
-      <ellipse cx="73" cy="117" rx="10" ry="6" fill="#8ee244"/><ellipse cx="167" cy="117" rx="10" ry="6" fill="#8ee244"/>
-      <path d="M100 121h40c-1 23-11 30-20 30s-19-7-20-30Z" fill="#214708"/><path d="M104 122h32v7h-32Z" fill="white"/><path d="M108 145c4-10 20-10 24 0-7 7-17 7-24 0" fill="#ff8f98"/>
-      <path d="M106 165h28" stroke="#8ee244" stroke-width="6" stroke-linecap="round"/>
-    </g></svg></div>`;
+    ${companionArt(companionId, "celebrate")}</svg></div>`;
 }
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const pick=(a,n)=>shuffle(a).slice(0,n);
@@ -184,6 +177,7 @@ function similar(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;if(a===b||a.include
 // ================= home =================
 function savedSession(){try{const s=JSON.parse(localStorage.getItem(SKEY()));if(!(s&&s.si<s.steps.length))return null;if((LESSON?LESSON.id:null)!==(s.lesson||null))return null;return s}catch{return null}}
 function renderHome(){
+  $('#companion-home').innerHTML=`${portrait()}<div><strong>${friend().name}와 함께 글자 연습</strong><p>${friend().welcome}</p></div>`;
   let streak=0;for(let i=0;;i++){const d=new Date();d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);if(S.days[k])streak++;else if(i===0)continue;else break}
   const L=learned();
   $('#h-streak').textContent=streak;$('#h-xp').textContent=S.xp;$('#h-known').textContent=L.filter(k=>lvl(k)>=3).length;
@@ -249,7 +243,7 @@ function startSession(){
 }
 $('#start').addEventListener('click',()=>{sfx.tap();if(S.sound===null)askPerm(startSession);else{if(S.sound){soundOn=true;unlockAudio()}startSession()}});
 $('#l-x').addEventListener('click',()=>{persist();save();if(LESSON){tellParent('solingo:exit');return}state='idle';$('#lesson').classList.remove('on');$('#home').inert=false;renderHome();$('#start').focus();tellParent('solingo:session-end');toast('저장했어요. 이어서 할 수 있어요')});
-function setFoot(mode,label,verdict=''){const f=$('#l-foot');f.className='foot'+(mode?' '+mode:'');const b=$('#l-btn');b.textContent=label;b.className='btn lg '+(mode==='no'?'danger':'secondary');$('#l-verdict').innerHTML=verdict}
+function setFoot(mode,label,verdict=''){const f=$('#l-foot');f.className='foot'+(mode?' '+mode:'');const b=$('#l-btn');b.textContent=label;b.className='btn lg '+(mode==='no'?'danger':'secondary');$('#l-verdict').innerHTML=verdict+(verdict?`<div class="companion-verdict">${portrait(mode==='no'?'encourage':'celebrate')}<span>${friend().name} · ${mode==='no'?friend().encourage:friend().correct}</span></div>`:'')}
 function lock(v){const b=$('#l-btn');b.disabled=v}
 function renderStep(){
   if(si>=steps.length)return finish();
@@ -387,6 +381,7 @@ function finish(){
   progress(100);sfx.done();haptic('done');
   const b=document.createElement('div');b.className='step in';$('#stage').innerHTML='';$('#stage').appendChild(b);
   b.innerHTML=`<div class="done-hero">${mascot(pct>=90)}<h2 tabindex="-1">${pct>=90?'완벽해요!':pct>=70?'잘했어요!':'끝까지 왔어요!'}</h2>
+  <p class="companion-complete">${friend().name} · ${friend().complete}</p>
   ${newK.length?`<div class="tiny" style="margin-top:10px">오늘 새로 배운 글자</div><div class="newk kana">${newK.map(k=>`<span>${k}</span>`).join('')}</div>`:''}
   <div class="result"><div class="rcard xp"><div class="h">획득 XP</div><div class="v">${icon('xp')} ${xp}</div></div><div class="rcard acc"><div class="h">정확도</div><div class="v">${pct}%</div></div><div class="rcard streak"><div class="h">연속일</div><div class="v">${icon('streak')} ${streak}</div></div></div>
   <p class="tiny" style="margin-top:16px">${pct<75?'한 세션 더 하면 새 글자 대신 복습이 나와요. 그게 맞아요.':'좋아요. 한 세션 더 하면 다음 글자가 열립니다.'}</p><p class="tiny" id="save-status" role="status">계정에 학습 기록을 저장하고 있어요…</p></div>`;

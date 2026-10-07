@@ -1,4 +1,4 @@
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -18,6 +18,7 @@ import {
 } from "@/db/queries";
 import { auth } from "@/lib/session";
 import { todayGoal } from "@/lib/streak";
+import { COMPANIONS, isCompanion } from "@/public/companions";
 
 import { KanaHome } from "./kana-home";
 import { LearnExtras } from "./learn-extras";
@@ -50,6 +51,8 @@ export default async function LearnPage(
 	const completed = path.filter((lesson) => lesson.completed).length;
 	const currentUnit = units.find((unit) => unit.id === active?.unitId);
 	const courseFinished = path.length > 0 && completed === path.length;
+	const choice = progress.equipped?.companion;
+	const friend = COMPANIONS[isCompanion(choice) ? choice : "quokka"];
 
 	return (
 		<div className="flex items-start gap-8">
@@ -71,7 +74,7 @@ export default async function LearnPage(
 				</header>
 				<section className="learning-hero mb-8">
 					<div className="relative z-10 min-w-0 flex-1">
-						<p className="mb-2 text-xs font-extrabold text-[#3c741d]">
+						<p className="mb-2 text-xs font-extrabold text-[var(--companion-ink)]">
 							{courseFinished
 								? "코스 완료"
 								: currentUnit
@@ -83,17 +86,20 @@ export default async function LearnPage(
 								? "여기까지, 정말 잘했어요!"
 								: percentage > 0
 								? "배우던 곳에서 계속해요"
-								: "오늘도 한 걸음 더"}
+								: `${friend.name}와 한 걸음 더`}
 						</h2>
-						<p className="mb-5 mt-2 text-sm leading-relaxed text-muted-foreground">
-							{active?.title ?? (courseFinished
-								? "복습으로 배운 것을 내 것으로 만들어 보세요."
-								: "첫 레슨으로 새로운 언어를 만나 보세요.")}
+						<p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+							{courseFinished ? friend.complete : friend.welcome}
 						</p>
+						{active && (
+							<p className="mt-2 text-xs font-bold text-[var(--companion-ink)]">
+								{active.title}
+							</p>
+						)}
 						<Button
 							asChild
 							variant="secondary"
-							className="min-w-36"
+							className="mt-5 min-w-36"
 						>
 							<Link
 								href={active
@@ -118,47 +124,16 @@ export default async function LearnPage(
 				</section>
 				<LearnExtras />
 				<div className="mt-8 space-y-5">
-					{units.map((unit) => {
-						const unitDone = unit.lessons.filter((lesson) =>
-							lesson.completed
-						).length;
-						const isCurrent = currentUnit?.id === unit.id ||
-							(!active && unit.order === 1);
-						const opens = isCurrent ||
-							unit.lessons.some((lesson) =>
-								lesson.id === justDone
-							);
-						return (
-							<details
-								key={unit.id}
-								open={opens}
-								className="learning-unit group/unit"
-							>
-								<summary className="flex cursor-pointer list-none items-center gap-3 rounded-2xl px-1 py-3">
-									<span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-muted text-sm font-black">
-										{unit.order}
-									</span>
-									<span className="min-w-0 flex-1 text-sm font-extrabold">
-										{unit.title}
-									</span>
-									<span className="shrink-0 text-xs font-bold tabular-nums text-muted-foreground">
-										{unitDone}/{unit.lessons.length}
-									</span>
-									<ChevronDown
-										className="h-4 w-4 shrink-0 transition-transform group-open/unit:rotate-180 motion-reduce:transition-none"
-										aria-hidden
-									/>
-								</summary>
-								<Unit
-									{...unit}
-									activeLesson={active}
-									activeLessonPercentage={percentage}
-									justDone={justDone}
-									opened={opened}
-								/>
-							</details>
-						);
-					})}
+					{units.map((unit) => (
+						<Unit
+							key={unit.id}
+							{...unit}
+							activeLesson={active}
+							activeLessonPercentage={percentage}
+							justDone={justDone}
+							opened={opened}
+						/>
+					))}
 				</div>
 			</FeedWrapper>
 			<StickyWrapper>
@@ -202,7 +177,10 @@ export default async function LearnPage(
 						<span>
 							{Math.min(goal.done, goal.goal)} / {goal.goal} 레슨
 						</span>
-						<Link href="/quests" className="py-2 text-[#3c741d]">
+						<Link
+							href="/quests"
+							className="py-2 text-[var(--companion-ink)]"
+						>
 							퀘스트 보기
 						</Link>
 					</div>

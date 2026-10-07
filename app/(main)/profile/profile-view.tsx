@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrandIcon } from "@/components/brand-icon";
 import { PageHeader } from "@/components/page-header";
+import { Mascot } from "@/components/mascot";
+import { useCompanion } from "@/components/companion-provider";
 import { toast } from "sonner";
 
 import { equipItemAction, updateUserNameAction } from "@/actions/economy";
@@ -62,6 +64,7 @@ export const ProfileView = ({
 	const [equipped, setEquipped] = useState(initialEquipped);
 	const [name, setName] = useState(targetName);
 	const isSelf = targetUserId === selfUserId;
+	const companion = useCompanion();
 
 	const equip = (slot: "frame" | "title" | "mascot", key: string | null) => {
 		if (!isSelf || pending) return;
@@ -155,6 +158,25 @@ export const ProfileView = ({
 				)}
 			</div>
 
+			{isSelf && (
+				<section className="mt-4 flex items-center gap-3 rounded-2xl bg-[var(--companion-soft)] p-4 sm:gap-5">
+					<Mascot pose="wave" className="h-20 w-24 shrink-0" />
+					<div className="min-w-0 flex-1">
+						<p className="text-xs font-bold text-[var(--companion-ink)]">
+							나의 학습 친구
+						</p>
+						<h2 className="mt-1 text-lg font-extrabold">
+							{companion.name}와 함께
+						</h2>
+						<p className="mt-1 text-sm text-muted-foreground">
+							{companion.theme}
+						</p>
+					</div>
+					<Button asChild variant="ghost" size="sm">
+						<Link href="/companion">친구 변경</Link>
+					</Button>
+				</section>
+			)}
 			<div className="mt-4 grid w-full grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-3">
 				<Stat label="XP" value={points} />
 				<Stat label="젬" value={gems} />

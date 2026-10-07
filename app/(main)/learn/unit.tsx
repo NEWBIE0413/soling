@@ -45,7 +45,7 @@ export const Unit = ({
 					: undefined}
 			/>
 
-			<div className="relative mx-auto flex w-full max-w-[480px] flex-col items-center gap-2 py-6">
+			<div className="lesson-path relative mx-auto flex w-full max-w-[480px] flex-col items-center gap-6 pb-10 pt-6">
 				{lessons.map((lesson, i) => {
 					const isCurrent = lesson.id === activeLesson?.id;
 					const isLocked = !lesson.completed && !isCurrent;

@@ -1,0 +1,39 @@
+:root,
+[data-companion] {
+  --game-green: var(--companion-primary);
+  --game-green-depth: var(--companion-depth);
+  --game-green-ink: var(--companion-ink);
+  --game-green-soft: var(--companion-soft);
+  --green: var(--companion-primary);
+  --green-depth: var(--companion-depth);
+  --green-ink: var(--companion-ink);
+  --green-soft: var(--companion-soft);
+}
+:root,
+[data-companion="quokka"] {
+  --companion-primary: #9f663f;
+  --companion-depth: #774725;
+  --companion-ink: #613c27;
+  --companion-soft: #faf0e6;
+  --companion-highlight: #e5b48b;
+  --companion-border: #ead9c9;
+  --companion-canvas: #fffcf8;
+}
+[data-companion="seal"] {
+  --companion-primary: #4c77a1;
+  --companion-depth: #35597e;
+  --companion-ink: #304f70;
+  --companion-soft: #edf4fb;
+  --companion-highlight: #a4c5e4;
+  --companion-border: #d3e1ef;
+  --companion-canvas: #fafdff;
+}
+[data-companion="bunny"] {
+  --companion-primary: #8563a9;
+  --companion-depth: #634980;
+  --companion-ink: #5d4478;
+  --companion-soft: #f4effa;
+  --companion-highlight: #cbb8e4;
+  --companion-border: #e0d6ed;
+  --companion-canvas: #fdfbff;
+}

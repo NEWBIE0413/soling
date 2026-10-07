@@ -7,10 +7,10 @@
   --text-3: #67746a;
   --border: #dfe4dd;
   --muted: #f7f9f5;
-  --green: #58c900;
-  --green-depth: #409309;
-  --green-ink: #214708;
-  --green-soft: #eff9e5;
+  --green: var(--companion-primary);
+  --green-depth: var(--companion-depth);
+  --green-ink: var(--companion-ink);
+  --green-soft: var(--companion-soft);
   --sky: #1ca7e8;
   --sky-depth: #087bb8;
   --sky-ink: #07577f;
@@ -204,7 +204,7 @@ button:disabled {
 .start {
   --depth: var(--green-depth);
   background: var(--green);
-  color: var(--green-ink);
+  color: white;
 }
 .btn.primary,
 .spk,
@@ -943,32 +943,66 @@ canvas.pad.wide {
   width: 100%;
   overflow: visible;
 }
-.mascot-character {
+.reward-scene .mascot-character {
   transform-origin: 120px 190px;
   animation: celebrate 1100ms var(--spring);
 }
-.mascot-arm-left {
-  transform-origin: 65px 105px;
+.reward-scene .mascot-arm-left {
+  transform-origin: 65px 109px;
   transform: rotate(115deg);
   animation: arm-left 1100ms var(--spring);
 }
-.mascot-arm-right {
-  transform-origin: 175px 105px;
+.reward-scene .mascot-arm-right {
+  transform-origin: 175px 109px;
   transform: rotate(-115deg);
   animation: arm-right 1100ms var(--spring);
 }
-.mascot-foot-left {
-  transform-origin: 90px 175px;
+.reward-scene .mascot-foot-left {
+  transform-origin: 92px 180px;
   animation: foot-left 1100ms var(--spring);
 }
-.mascot-foot-right {
-  transform-origin: 150px 175px;
+.reward-scene .mascot-foot-right {
+  transform-origin: 148px 180px;
   animation: foot-right 1100ms var(--spring);
 }
 .reward-star {
   transform-box: fill-box;
   transform-origin: center;
   animation: star-burst 1100ms var(--spring);
+}
+.companion-home {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 12px 20px;
+  border-radius: 20px;
+  background: var(--green-soft);
+  color: var(--green-ink);
+}
+.companion-home p,
+.companion-complete {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.companion-portrait {
+  width: 88px;
+  height: 80px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+.companion-verdict {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.companion-verdict .companion-portrait {
+  width: 52px;
+  height: 48px;
 }
 .reward-star:nth-child(2) {
   animation-delay: 80ms;

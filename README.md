@@ -1,11 +1,15 @@
-# Solingo
+# soling · 솔링
 
-셀프호스팅하는 듀오링고식 언어 학습 플랫폼입니다. **커리큘럼은 들어 있지 않습니다.** 배우려는 언어와 목표에 맞는 코스를 AI로 직접 만들어 얹어 쓰는 것을 전제로 만들었습니다.
+셀프호스팅하는 나만의 언어 학습 플랫폼입니다. **커리큘럼은 들어 있지 않습니다.** 배우려는 언어와 목표에 맞는 코스를 AI로 직접 만들어 얹어 쓰는 것을 전제로 만들었습니다.
 
-*A self-hosted, Duolingo-style learning platform. It ships without a curriculum: you write your own courses (typically with an AI) against a JSON spec and load them in. The UI is Korean.*
+_A self-hosted language learning platform. It ships without a curriculum: you write your own courses (typically with an AI) against a JSON spec and load them in. The UI is Korean._
+
+앱 이름은 `soling`(솔링)입니다. 기존 설치의 데이터와 연결을 유지하기 위해
+운영 도메인·컨테이너·DB 이름과 저장 키는 기존 `solingo` 식별자를 유지합니다.
 
 ## 들어 있는 것
 
+- **학습 친구와 테마**: 쿼카 모카(갈색), 물범 루미(파란색), 토끼 보니(보라색). 처음에 친구를 고르고 프로필에서 바꿀 수 있다. 선택은 계정에 저장되며 안내·정오답 반응·완료·가나·첨삭 화면에 이어진다. 기존 `equipped` JSON 필드를 사용하므로 이 기능에 DB 마이그레이션이나 재시드는 필요하지 않다.
 - **학습 경로**: 코스 → 유닛 → 레슨. 유닛마다 진행 막대, 레슨을 끝내면 다음이 열린다.
 - **문제 유형 7가지**: 고르기(SELECT), 말풍선 고르기(ASSIST), 듣고 고르기(LISTEN), 짝 맞추기(MATCH), 타일로 문장 만들기(BUILD), 따라 쓰기(TRACE), 따라 말하기(SPEAK, 브라우저 음성 인식).
 - **학습 루프**: 틀린 문제는 레슨이 끝나기 전에 다시 나오고, 약점 복습이 모아서 다시 낸다. 레벨 테스트 결과는 급수×영역 표로 나온다.

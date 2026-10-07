@@ -12,9 +12,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta
       name="description"
-      content="Solingo — self-hosted, Duolingo-style script trainer. Engine + JSON courses."
+      content="솔링 — 소리를 듣고, 읽고, 쓰며 익히는 나만의 언어 학습."
     />
-    <title>Solingo</title>
+    <title>soling · 솔링</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2716%27 fill=%27%2358cc02%27/%3E%3Ctext x=%2732%27 y=%2744%27 font-size=%2736%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27sans-serif%27%3Eあ%3C/text%3E%3C/svg%3E"
@@ -25,7 +25,8 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap"
     />
-    <link rel="stylesheet" href="styles.css?v=7" />
+    <link rel="stylesheet" href="../companion-themes.css" />
+    <link rel="stylesheet" href="styles.css?v=8" />
     <style>
       .lesson-mode #home {
         display: none;
@@ -49,6 +50,7 @@
         <h1>글자 연습</h1>
         <p>소리를 듣고, 읽고, 쓰며 익혀보세요.</p>
       </header>
+      <div id="companion-home" class="companion-home"></div>
       <div class="hud">
         <div class="streak">
           <span class="ic" data-icon="streak"></span>
@@ -156,6 +158,6 @@
     <label class="hapt" aria-hidden="true"
       ><input type="checkbox" switch id="hapt" tabindex="-1"
     /></label>
-    <script src="app.js?v=13"></script>
+    <script type="module" src="app.js?v=14"></script>
   </body>
 </html>

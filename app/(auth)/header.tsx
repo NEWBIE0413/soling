@@ -7,12 +7,12 @@ export const Header = () => (
 		<div className="mx-auto flex h-20 max-w-[1080px] items-center">
 			<Link
 				href="/"
-				aria-label="Solingo 홈"
+				aria-label="솔링 홈"
 				className="flex items-center gap-1"
 			>
 				<Mascot className="h-12 w-12" />
-				<span className="text-2xl font-black tracking-[-.04em] text-[#409309]">
-					solingo
+				<span className="text-2xl font-black tracking-[-.04em] text-[var(--companion-ink)]">
+					soling
 				</span>
 			</Link>
 		</div>

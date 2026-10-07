@@ -7,6 +7,11 @@ import { HeartsModal } from "@/components/modals/hearts-modal";
 import { PracticeModal } from "@/components/modals/practice-modal";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config";
+import { CompanionProvider } from "@/components/companion-provider";
+import { CompanionChooser } from "@/components/companion-chooser";
+import { getUserProgress } from "@/db/queries";
+import { currentUser } from "@/lib/session";
+import { isCompanion } from "@/public/companions";
 
 import "./globals.css";
 
@@ -28,20 +33,30 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = siteConfig;
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const [user, progress] = await Promise.all([
+		currentUser(),
+		getUserProgress(),
+	]);
+	const choice = progress?.equipped?.companion;
+	const companion = isCompanion(choice) ? choice : null;
 	return (
-		<html lang="ko">
+		<html lang="ko" data-companion={companion ?? "quokka"}>
 			<body className={font.className}>
-				<Toaster theme="light" richColors closeButton />
-				<Celebrate />
-				<ExitModal />
-				<HeartsModal />
-				<PracticeModal />
-				{children}
+				<CompanionProvider companion={companion ?? "quokka"}>
+					<Toaster theme="light" richColors closeButton />
+					<Celebrate />
+					<ExitModal />
+					<HeartsModal />
+					<PracticeModal />
+					{user && !companion
+						? <CompanionChooser onboarding />
+						: children}
+				</CompanionProvider>
 			</body>
 		</html>
 	);

@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/page-header";
+import { CompanionFeedback } from "@/components/companion-feedback";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { and, desc, eq, isNotNull, isNull } from "drizzle-orm";
@@ -128,14 +129,11 @@ const WritingTaskPage = async (
 										{h.text}
 									</p>
 									{h.feedback && (
-										<div className="mt-3 rounded-xl bg-green-50 p-3">
-											<p className="mb-1 text-sm font-black text-green-700">
-												첨삭
-											</p>
+										<CompanionFeedback grader={h.grader}>
 											<Markdown className="text-sm">
 												{h.feedback}
 											</Markdown>
-										</div>
+										</CompanionFeedback>
 									)}
 								</li>
 							))}

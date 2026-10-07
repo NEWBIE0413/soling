@@ -132,9 +132,8 @@ export const AuthForm = ({ mode }: { mode: "sign-in" | "sign-up" }) => {
 						: "이어서 학습하기"}
 				</Button>
 				<p className="mt-3 text-center text-sm text-muted-foreground">
-					{signingUp
-						? "이미 계정이 있나요?"
-						: "Solingo가 처음인가요?"}{" "}
+					{signingUp ? "이미 계정이 있나요?" : "솔링이 처음인가요?"}
+					{" "}
 					<Link
 						href={signingUp ? "/sign-in" : "/sign-up"}
 						className="inline-flex min-h-11 items-center font-extrabold text-[#087bb8]"

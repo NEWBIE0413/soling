@@ -17,11 +17,11 @@ export const Sidebar = ({ className }: { className?: string }) => (
 		<Link
 			href="/learn"
 			className="mb-8 flex items-center gap-1 px-2"
-			aria-label="Solingo 학습 홈"
+			aria-label="솔링 학습 홈"
 		>
 			<Mascot className="h-14 w-14" />
-			<span className="text-[28px] font-black tracking-[-0.04em] text-[#409309]">
-				solingo
+			<span className="text-[28px] font-black tracking-[-0.04em] text-[var(--companion-ink)]">
+				soling
 			</span>
 		</Link>
 		<nav

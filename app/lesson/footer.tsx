@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useKey } from "react-use";
 
 import { Button } from "@/components/ui/button";
+import { Mascot } from "@/components/mascot";
+import { useCompanion } from "@/components/companion-provider";
 import { cn } from "@/lib/utils";
 
 type FooterProps = {
@@ -26,6 +28,7 @@ export const Footer = (
 		continueLabel,
 	}: FooterProps,
 ) => {
+	const companion = useCompanion();
 	useKey(
 		(event) =>
 			event.key === "Enter" && !event.repeat && !event.altKey &&
@@ -62,33 +65,47 @@ export const Footer = (
 						? (
 							<div
 								role="status"
-								className="animate-[fade_150ms_ease-out]"
+								className="flex items-start gap-3 animate-[fade_150ms_ease-out]"
 							>
-								<div
-									className={cn(
-										"flex items-center gap-2 text-lg font-extrabold",
-										status === "correct"
-											? "text-[#3c741d]"
-											: "text-[#a1263d]",
+								<Mascot
+									pose={status === "correct"
+										? "celebrate"
+										: "encourage"}
+									className="h-16 w-16 shrink-0"
+								/>
+								<div className="min-w-0">
+									<div
+										className={cn(
+											"flex items-center gap-2 text-lg font-extrabold",
+											status === "correct"
+												? "text-[var(--companion-ink)]"
+												: "text-[#a1263d]",
+										)}
+									>
+										{status === "correct"
+											? <CheckCircle2 size={26} />
+											: <XCircle size={26} />}
+										{status === "correct"
+											? "정답이에요!"
+											: "다시 만나면 맞힐 수 있어요"}
+									</div>
+									<p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+										<strong>{companion.name}</strong> ·{" "}
+										{status === "correct"
+											? companion.correct
+											: companion.encourage}
+									</p>
+									{status === "wrong" && wrongHint && (
+										<p className="mt-1 text-sm font-bold text-[#a1263d]">
+											{wrongHint}
+										</p>
 									)}
-								>
-									{status === "correct"
-										? <CheckCircle2 size={26} />
-										: <XCircle size={26} />}
-									{status === "correct"
-										? "정답이에요!"
-										: "다시 만나면 맞힐 수 있어요"}
+									{explanation && (
+										<p className="mt-2 max-h-28 overflow-y-auto text-sm leading-relaxed text-foreground">
+											{explanation}
+										</p>
+									)}
 								</div>
-								{status === "wrong" && wrongHint && (
-									<p className="mt-1 text-sm font-bold text-[#a1263d]">
-										{wrongHint}
-									</p>
-								)}
-								{explanation && (
-									<p className="mt-2 max-h-28 overflow-y-auto text-sm leading-relaxed text-foreground">
-										{explanation}
-									</p>
-								)}
 							</div>
 						)
 						: (

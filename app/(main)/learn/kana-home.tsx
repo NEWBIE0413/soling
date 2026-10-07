@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { KANA_TRAINER_TITLE } from "@/constants";
+import { useCompanion } from "@/components/companion-provider";
 
 /*
  히라가나 훈련 keeps its own adaptive home (start button, kana chart, words) — the engine decides what
@@ -13,6 +14,7 @@ import { KANA_TRAINER_TITLE } from "@/constants";
 */
 export const KanaHome = () => {
 	const router = useRouter();
+	const companion = useCompanion();
 	const [session, setSession] = useState(false);
 	useEffect(() => {
 		const onMsg = (e: MessageEvent) => {
@@ -39,7 +41,7 @@ export const KanaHome = () => {
 				: "fixed inset-x-0 top-[calc(64px+env(safe-area-inset-top))] bottom-[calc(74px+env(safe-area-inset-bottom))] bg-white lg:left-[224px] lg:top-0 lg:bottom-0"}
 		>
 			<iframe
-				src="/kana/index.html?course=ja-kana&embed=1"
+				src={`/kana/index.html?course=ja-kana&embed=1&companion=${companion.id}`}
 				title={KANA_TRAINER_TITLE}
 				className="h-full w-full border-0"
 				allow="microphone; autoplay"

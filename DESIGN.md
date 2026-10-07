@@ -1,9 +1,13 @@
-# Solingo design system
+# soling design system
 
 ## 1. Atmosphere & identity
 
-A bright, tactile learning game, not a dashboard. Preserve Solingo's green square
-mascot and give it expressive eyes, soft limbs and an articulated celebration.
+A bright, tactile learning game, not a dashboard. The product name is `soling`
+(솔링). Its palette and cute mascot must have an identity distinct from Duolingo.
+Three companions share the app: Mocha the brown quokka (모카), Lumi the blue seal
+(루미), and Boni the purple bunny (보니). The learner chooses a companion on first
+use and can change it in the profile. That character remains their guide through
+greetings, answer feedback, completion, kana practice, and writing feedback.
 Learning progress is the focal point; illustrations reward effort rather than
 compete with a question. Duolingo is the quality benchmark, not an asset source.
 Apple Design supplies immediate press feedback, spatial continuity, interruptible
@@ -12,25 +16,31 @@ components, not a second UI framework.
 
 ## 2. Color
 
-| Role          | Token / value                    | Use                                |
-| ------------- | -------------------------------- | ---------------------------------- |
-| Canvas        | `--background: 0 0% 100%`        | White, light-mode learning surface |
-| Ink           | `--foreground: 140 12% 23%`      | Headings and body                  |
-| Muted ink     | `--muted-foreground: 135 6% 43%` | Supporting text                    |
-| Quiet surface | `--muted: 100 23% 97%`           | Aside and inactive controls        |
-| Border        | `--border: 110 13% 88%`          | Neutral structural edges           |
-| Leaf          | `--game-green: #58c900`          | Main action, progress, mascot      |
-| Leaf depth    | `--game-green-depth: #409309`    | Physical button base               |
-| Leaf ink      | `--game-green-ink: #214708`      | Legible text on bright leaf        |
-| Leaf wash     | `--game-green-soft: #eff9e5`     | Selected navigation                |
-| Sky           | `--game-blue: #1ca7e8`           | Gems and information               |
-| Sky wash      | `--game-blue-soft: #eaf7ff`      | Selected answer                    |
-| Honey         | `--game-gold: #ffc83d`           | XP, trophies and milestones        |
-| Tangerine     | `--game-orange: #ff9633`         | Streak                             |
-| Berry         | `--game-red: #df5260`            | Incorrect answer and hearts        |
-| Lilac         | `--game-purple: #9061cf`         | Optional writing and achievements  |
+| Role          | Token / value                   | Use                                |
+| ------------- | ------------------------------- | ---------------------------------- |
+| Canvas        | `--background: 0 0% 100%`       | White, light-mode learning surface |
+| Ink           | `--foreground: 28 16% 21%`      | Headings and body                  |
+| Muted ink     | `--muted-foreground: 28 5% 43%` | Supporting text                    |
+| Quiet surface | `--muted: 30 20% 97%`           | Aside and inactive controls        |
+| Border        | `--border: 30 18% 87%`          | Neutral structural edges           |
+| Companion     | `--companion-primary`           | Main action and progress           |
+| Depth         | `--companion-depth`             | Physical button base               |
+| Ink           | `--companion-ink`               | Text on white and soft surfaces    |
+| Wash          | `--companion-soft`              | Selected navigation and feedback   |
+| Sky           | `--game-blue: #1ca7e8`          | Gems and information               |
+| Sky wash      | `--game-blue-soft: #eaf7ff`     | Selected answer                    |
+| Honey         | `--game-gold: #ffc83d`          | XP, trophies and milestones        |
+| Tangerine     | `--game-orange: #ff9633`        | Streak                             |
+| Berry         | `--game-red: #df5260`           | Incorrect answer and hearts        |
+| Lilac         | `--game-purple: #9061cf`        | Optional writing and achievements  |
 
-SVG art can use highlight/shadow ramps of these hues: green #8ee244/#aceb70,
+`public/companion-themes.css` is shared by Next and the kana engine.
+Brown uses #9f663f/#774725/#faf0e6, blue #4c77a1/#35597e/#edf4fb, and
+purple #8563a9/#634980/#f4effa for action/depth/wash. Main-action text is white.
+The existing `--game-green*` and kana `--green*` tokens alias the companion
+palette; they are component roles, not a fixed green identity.
+
+SVG art can use highlight/shadow ramps of secondary hues:
 sky #63d3fa/#087bb8, honey #ffe58d/#dc9416, orange #ffbc70/#d65d18,
 berry #ff8f98/#b63448, ink #324238 and white. Existing course flags and profile
 skins are preserved. Status always also has a label or glyph. The product
@@ -66,7 +76,7 @@ overflow. Shared primitives: stack, cluster, content-limiter, sticky-aside.
 ### Button (`components/ui/button.tsx`)
 
 - Native button or Radix Slot anchor; 48px minimum normal height, 44px icon/small.
-- Filled leaf / sky / berry, quiet outline, ghost, navigation and disabled.
+- Filled companion / sky / berry, quiet outline, ghost, navigation and disabled.
 - A stable neutral border and bottom box-shadow form a physical base; pressing
   translates the face 3px and shortens its shadow, without changing box height.
 - Pointer hover is capability-gated. Same-frame press, visible focus ring,
@@ -83,19 +93,33 @@ overflow. Shared primitives: stack, cluster, content-limiter, sticky-aside.
 
 ### Mascot (`components/mascot.tsx`)
 
-- Original Solingo green rounded-square character, now with eyes and limbs.
-- Poses: idle, wave, celebrate, thinking. Decorative unless given a label.
+- `public/companion-art.js` provides the same trusted SVG artwork to React and
+  vanilla kana. Character silhouettes retain the adopted concept sheet; darker
+  lower edges and restrained highlights retain the app's tactile vector texture.
+- Poses: idle, wave, celebrate, thinking, encourage. Decorative unless labeled.
 - Celebration is a finite anticipation/jump/arm-raise/landing sequence. Normal
   completion and perfect completion vary via expression/scene, not huge confetti.
 - Reduced motion retains a happy resting pose with a brief fade.
+
+### Companion selection
+
+- Native radios, keyboard arrows, visible focus and an explicit save action.
+- `user_progress.equipped.companion` holds the account choice. No schema migration
+  or reseeding is needed; changing companions preserves course, XP and cosmetics.
+- Theme and character are server-rendered from the account, not browser-local
+  preferences. Kana receives the same choice with its authenticated state.
+- Character dialogue is authored interface copy. Existing external writing
+  grades remain the grading source, attributed separately from the guide.
 
 ### Choice card / lesson node
 
 - Choice cards are native buttons with aria-pressed and visible 1-9 hints.
 - Selection uses a tonal wash and check glyph, no changing layout or colored
   accent border. Correct/incorrect use a glyph and text, not just hue.
-- Nodes are one semantic link, not a button nested in a link; locked nodes are
-  non-navigable. The current node has a readable lesson title and a start action.
+- Circular nodes follow the original eight-step winding path, without list rows
+  or collapsed units. Nodes are one semantic link, not a button nested in a link;
+  locked nodes are non-navigable. Lesson titles remain in accessible names and
+  native tooltips. The current node has a progress ring and a start action.
 - Newly completed/opened nodes animate once; no endless bouncing.
 
 ### PageHeader / Surface

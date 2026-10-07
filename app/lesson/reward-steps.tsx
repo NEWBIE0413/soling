@@ -8,6 +8,7 @@ import { claimQuestAction } from "@/actions/economy";
 import { BrandIcon } from "@/components/brand-icon";
 import { chime } from "@/components/celebrate";
 import { Mascot } from "@/components/mascot";
+import { useCompanion } from "@/components/companion-provider";
 import { Button } from "@/components/ui/button";
 import type { QuestView } from "@/lib/economy-defs";
 import { cn } from "@/lib/utils";
@@ -221,6 +222,7 @@ export const RewardSteps = (
 };
 
 function Summary({ stats, bonus }: { stats: LessonStats; bonus?: Bonus }) {
+	const companion = useCompanion();
 	const xp = useCounter(stats.xp + (bonus?.total ?? 0));
 	const accuracy = useCounter(stats.accuracy);
 	const perfect = stats.accuracy === 100;
@@ -241,7 +243,7 @@ function Summary({ stats, bonus }: { stats: LessonStats; bonus?: Bonus }) {
 			>
 				<Mascot
 					pose="celebrate"
-					label="두 팔을 들고 축하하는 Solingo"
+					label={`두 팔을 들고 축하하는 ${companion.name}`}
 				/>
 				<BrandIcon name="star" className="reward-spark" />
 				<BrandIcon
@@ -251,7 +253,7 @@ function Summary({ stats, bonus }: { stats: LessonStats; bonus?: Bonus }) {
 				<BrandIcon name="star" className="reward-spark" />
 			</div>
 			<div>
-				<p className="mb-2 text-sm font-extrabold text-[#3c741d]">
+				<p className="mb-2 text-sm font-extrabold text-[var(--companion-ink)]">
 					{stats.practice ? "복습 완료" : "레슨 완료"}
 				</p>
 				<h1 className="text-3xl font-black leading-tight tracking-tight sm:text-4xl">
@@ -261,6 +263,9 @@ function Summary({ stats, bonus }: { stats: LessonStats; bonus?: Bonus }) {
 						? "오늘도 실력이 쑥!"
 						: "끝까지 해낸 당신, 멋져요!"}
 				</h1>
+				<p className="mt-3 text-sm font-bold leading-relaxed text-[var(--companion-ink)]">
+					{companion.name} · {companion.complete}
+				</p>
 				<p className="mt-3 text-sm leading-relaxed text-muted-foreground">
 					{stats.missed > 0
 						? `처음에 틀린 ${stats.missed}개 중 ${stats.recovered}개를 다시 맞혔어요.`

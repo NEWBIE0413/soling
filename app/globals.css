@@ -30,6 +30,8 @@
   =============================================================================
 */
 
+@import "../public/companion-themes.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -42,42 +44,41 @@
   border-radius: 28px;
   background: var(--game-green-soft);
 }
-.learning-unit > summary::-webkit-details-marker {
-  display: none;
-}
 .lesson-node {
   display: flex;
-  width: 72px;
+  width: 68px;
   height: 68px;
   flex: none;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #f4f8ee;
-  border: 2px solid #dce3d7;
-  box-shadow: 0 6px 0 #dce3d7;
+  color: white;
+  background: var(--game-green);
+  border: 2px solid var(--game-green);
+  box-shadow: 0 6px 0 var(--game-green-depth);
   transition:
     transform 120ms var(--ease-out),
     box-shadow 120ms var(--ease-out);
 }
 .lesson-node-current {
-  background: var(--game-green);
-  border-color: var(--game-green);
   box-shadow:
     0 6px 0 var(--game-green-depth),
-    0 0 0 7px white;
-}
-.lesson-node-done {
-  background: var(--game-green-soft);
-  border-color: #c4dda9;
-  box-shadow: 0 6px 0 #c4dda9;
+    0 0 0 5px white;
 }
 .lesson-node-locked {
+  color: #a6ada2;
   background: #f0f3ec;
+  border-color: #e2e8df;
+  box-shadow: 0 6px 0 #dce3d7;
+}
+@media (hover: hover) {
+  a:hover .lesson-node {
+    filter: brightness(1.04);
+  }
 }
 a:active .lesson-node {
   transform: translateY(4px);
-  box-shadow: 0 2px 0 #c4dda9;
+  box-shadow: 0 2px 0 var(--game-green-depth);
 }
 .reward-scene {
   position: relative;
@@ -183,7 +184,7 @@ body,
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 140 12% 23%;
+    --foreground: 28 16% 21%;
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -197,8 +198,8 @@ body,
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 100 23% 97%;
-    --muted-foreground: 135 6% 43%;
+    --muted: 30 20% 97%;
+    --muted-foreground: 28 5% 43%;
 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
@@ -206,15 +207,15 @@ body,
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 110 13% 88%;
+    --border: 30 18% 87%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
-    --game-green: #58c900;
-    --game-green-depth: #409309;
-    --game-green-ink: #214708;
-    --game-green-soft: #eff9e5;
+    --game-green: var(--companion-primary);
+    --game-green-depth: var(--companion-depth);
+    --game-green-ink: var(--companion-ink);
+    --game-green-soft: var(--companion-soft);
     --game-blue: #1ca7e8;
     --game-blue-soft: #eaf7ff;
     --game-gold: #ffc83d;
@@ -338,7 +339,7 @@ body,
   .game-button-green {
     --button-face: var(--game-green);
     --button-base: var(--game-green-depth);
-    --button-ink: var(--game-green-ink);
+    --button-ink: white;
   }
   .game-button-blue {
     --button-face: #d8f2ff;
@@ -366,7 +367,7 @@ body,
   }
   .game-nav-active {
     --button-face: var(--game-green-soft);
-    --button-ink: #3c741d;
+    --button-ink: var(--companion-ink);
     background: var(--button-face);
   }
   .game-choice {
@@ -382,7 +383,7 @@ body,
     box-shadow: 0 1px 0 hsl(var(--border));
   }
   .game-choice[aria-pressed="true"] {
-    background: var(--game-blue-soft);
+    background: var(--companion-soft);
   }
   .game-choice[data-status="correct"] {
     background: var(--game-green-soft);
@@ -404,7 +405,7 @@ body,
     background: hsl(var(--muted));
   }
   .game-choice[aria-pressed="true"]:hover {
-    background: var(--game-blue-soft);
+    background: var(--companion-soft);
   }
 }
 

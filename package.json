@@ -1,5 +1,5 @@
 {
-  "name": "solingo-platform",
+  "name": "soling",
   "version": "1.0.1",
   "private": true,
   "scripts": {
@@ -69,13 +69,13 @@
     "email": "sanidhyyy@gmail.com",
     "url": "https://github.com/sanidhyy"
   },
-  "description": "Solingo platform — Duolingo-style language learning with JSON courses and script-level exercises.",
+  "description": "soling — self-hosted language learning with personal JSON courses and script-level exercises.",
   "keywords": [
     "reactjs",
     "nextjs",
     "vercel",
     "react",
-    "duolingo-clone",
+    "soling",
     "learn-language",
     "shadcn",
     "shadcn-ui",
