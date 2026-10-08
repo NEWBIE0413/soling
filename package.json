@@ -65,24 +65,29 @@
   },
   "packageManager": "pnpm@11.11.0",
   "author": {
-    "name": "Sanidhya Kumar Verma",
-    "email": "sanidhyyy@gmail.com",
-    "url": "https://github.com/sanidhyy"
+    "name": "NEWBIE0413",
+    "url": "https://github.com/NEWBIE0413"
   },
-  "description": "soling — self-hosted language learning with personal JSON courses and script-level exercises.",
+  "contributors": [
+    {
+      "name": "Sanidhya Kumar Verma",
+      "url": "https://github.com/sanidhyy"
+    }
+  ],
+  "description": "soling · 솔링 — 나만의 코스로 배우는 셀프호스팅 언어 학습 플랫폼.",
   "keywords": [
     "reactjs",
     "nextjs",
     "vercel",
     "react",
     "soling",
+    "솔링",
     "learn-language",
     "shadcn",
     "shadcn-ui",
     "radix-ui",
     "cn",
     "clsx",
-    "lingo",
     "postgresql",
     "sonner",
     "drizzle",
@@ -107,21 +112,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sanidhyy/duolingo-clone.git"
+    "url": "https://github.com/NEWBIE0413/soling.git"
   },
-  "homepage": "https://github.com/sanidhyy/duolingo-clone#readme",
+  "homepage": "https://github.com/NEWBIE0413/soling#readme",
   "bugs": {
-    "url": "https://github.com/sanidhyy/duolingo-clone/issues",
-    "email": "sanidhyyy@gmail.com"
-  },
-  "funding": [
-    {
-      "type": "patreon",
-      "url": "https://www.patreon.com/sanidhy"
-    },
-    {
-      "type": "Buy me a coffee",
-      "url": "https://www.buymeacoffee.com/sanidhy"
-    }
-  ]
+    "url": "https://github.com/NEWBIE0413/soling/issues"
+  }
 }

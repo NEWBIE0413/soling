@@ -10,13 +10,13 @@ export const siteConfig: Metadata = {
 		"vercel",
 		"react",
 		"soling",
+		"솔링",
 		"learn-language",
 		"shadcn",
 		"shadcn-ui",
 		"radix-ui",
 		"cn",
 		"clsx",
-		"lingo",
 		"postgresql",
 		"sonner",
 		"drizzle",
@@ -39,12 +39,11 @@ export const siteConfig: Metadata = {
 		"css",
 	] as Array<string>,
 	authors: {
-		name: "Sanidhya Kumar Verma",
-		url: "https://github.com/sanidhyy",
+		name: "NEWBIE0413",
+		url: "https://github.com/NEWBIE0413",
 	},
 } as const;
 
 export const links = {
-	sourceCode: "https://github.com/sanidhyy/duolingo-clone",
-	email: "sanidhyyy@gmail.com",
+	sourceCode: "https://github.com/NEWBIE0413/soling",
 } as const;

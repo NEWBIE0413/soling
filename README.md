@@ -1,10 +1,17 @@
+<img src=".github/soling.svg" alt="soling의 대표 캐릭터, 모카" width="96" height="96" />
+
 # soling · 솔링
+
+**나만의 코스로, 나만의 속도로.**
+
+[서비스](https://solingo.myworld.monster) · [코스 만들기](docs/COURSES.md) · [기여하기](CONTRIBUTING.md) · [문의·제안](https://github.com/NEWBIE0413/soling/issues)
 
 셀프호스팅하는 나만의 언어 학습 플랫폼입니다. **커리큘럼은 들어 있지 않습니다.** 배우려는 언어와 목표에 맞는 코스를 AI로 직접 만들어 얹어 쓰는 것을 전제로 만들었습니다.
 
 _A self-hosted language learning platform. It ships without a curriculum: you write your own courses (typically with an AI) against a JSON spec and load them in. The UI is Korean._
 
-앱 이름은 `soling`(솔링)입니다. 기존 설치의 데이터와 연결을 유지하기 위해
+공식 이름은 영문 `soling`, 한글 `솔링`이며, 저장소는 [NEWBIE0413/soling](https://github.com/NEWBIE0413/soling)입니다.
+기존 설치의 데이터와 연결을 유지하기 위해
 운영 도메인·컨테이너·DB 이름과 저장 키는 기존 `solingo` 식별자를 유지합니다.
 
 ## 들어 있는 것
@@ -23,6 +30,8 @@ _A self-hosted language learning platform. It ships without a curriculum: you wr
 ## 띄우기
 
 ```sh
+git clone https://github.com/NEWBIE0413/soling.git
+cd soling
 docker run -d --name solingo-pg -e POSTGRES_USER=solingo -e POSTGRES_PASSWORD=solingo \
   -e POSTGRES_DB=solingo -p 5433:5432 -v solingo-pg:/var/lib/postgresql/data postgres:16-alpine
 cp .env.example .env        # BETTER_AUTH_SECRET(openssl rand -hex 32), ADMIN_EMAILS
@@ -54,11 +63,11 @@ pnpm run db:seed:course my-course
 도커 이미지 하나에 Postgres가 붙는다. 코스 폴더는 이미지에 넣지 않고 마운트한다.
 
 ```sh
-docker build -t solingo .
-docker run -d --name solingo --env-file .env -p 3000:3000 \
-  -v /srv/my-courses:/courses:ro -e CONTENT_DIR=/courses solingo
-# 스키마: docker exec solingo sh -c 'cd /app && node_modules/.bin/drizzle-kit push --force'
-# 시드:   docker exec solingo sh -c 'cd /app && node_modules/.bin/tsx scripts/seed-course.ts my-course'
+docker build -t soling .
+docker run -d --name soling --env-file .env -p 3000:3000 \
+  -v /srv/my-courses:/courses:ro -e CONTENT_DIR=/courses soling
+# 스키마: docker exec soling sh -c 'cd /app && node_modules/.bin/drizzle-kit push --force'
+# 시드:   docker exec soling sh -c 'cd /app && node_modules/.bin/tsx scripts/seed-course.ts my-course'
 ```
 
 음성은 `/audio/<코스>/<파일>` 경로로 앱이 코스 폴더에서 직접 서빙한다(Range 요청 지원, 해시 이름이라 영구 캐시).

@@ -1,4 +1,4 @@
-# Code of Conduct - Lingo
+# Code of Conduct - soling
 
 ## Our Pledge
 
@@ -56,7 +56,8 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at <sanidhyyy@gmail.com>.
+reported to the [soling maintainer](https://github.com/NEWBIE0413).
+Do not include private information in public issues.
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the

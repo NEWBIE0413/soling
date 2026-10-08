@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="30 0 180 180">
+    <defs><clipPath id="portrait"><circle cx="120" cy="90" r="90"/></clipPath></defs>
+    <g clip-path="url(#portrait)">
+      <circle cx="120" cy="90" r="90" fill="#faf0e6"/>
+
+    <ellipse class="mascot-ground" cx="120" cy="205" rx="58" ry="8" fill="#324238" opacity=".09"/>
+    <g class="mascot-character">
+
+        <g class="mascot-foot mascot-foot-left">
+          <ellipse cx="88" cy="191" rx="23" ry="10" fill="#80502F"/>
+          <ellipse cx="88" cy="187" rx="22" ry="8" fill="#A56B40"/>
+        </g>
+        <g class="mascot-foot mascot-foot-right">
+          <ellipse cx="152" cy="191" rx="23" ry="10" fill="#80502F"/>
+          <ellipse cx="152" cy="187" rx="22" ry="8" fill="#A56B40"/>
+        </g>
+
+        <path d="M168 163c16-4 28-20 33-13 10 13-6 34-29 38l-11-8Z" fill="#A56B40"/>
+        <path d="M173 165c13-5 22-16 27-15 5 8-5 23-24 29Z" fill="#C8915B"/>
+        <ellipse cx="78" cy="49" rx="20" ry="24" transform="rotate(-20 78 49)" fill="#A56B40"/>
+        <ellipse cx="78" cy="45" rx="20" ry="23" transform="rotate(-20 78 45)" fill="#C8915B"/>
+        <ellipse cx="79" cy="47" rx="11" ry="15" transform="rotate(-20 79 47)" fill="#9B633D"/>
+        <ellipse cx="162" cy="49" rx="20" ry="24" transform="rotate(20 162 49)" fill="#A56B40"/>
+        <ellipse cx="162" cy="45" rx="20" ry="23" transform="rotate(20 162 45)" fill="#C8915B"/>
+        <ellipse cx="161" cy="47" rx="11" ry="15" transform="rotate(20 161 47)" fill="#9B633D"/>
+        <path d="M120 40c-26 0-48 14-60 40-10 20-12 34-6 48-12 24-15 46 1 59 13 10 36 14 65 14s52-4 65-14c16-13 13-35 1-59 6-14 4-28-6-48-12-26-34-40-60-40Z" fill="#A56B40"/>
+        <path d="M120 34c-26 0-47 14-59 40-10 21-12 34-6 48-12 24-15 45 0 58 13 10 36 14 65 14s52-4 65-14c15-13 12-34 0-58 6-14 4-27-6-48-12-26-33-40-59-40Z" fill="#C8915B"/>
+        <path d="M103 39c-3-9 7-20 12-16 3 2 0 8-2 10 9-7 18-7 18-2 0 3-4 5-7 7" fill="#C8915B"/>
+        <path d="M70 76c5-10 12-17 20-21" stroke="#E8B883" stroke-width="5" stroke-linecap="round"/>
+        <path d="M120 134c-25 0-37 16-35 35 1 17 15 25 35 25s34-8 35-25c2-19-10-35-35-35Z" fill="#EAC9A2"/>
+        <path d="M120 131c-24 0-36 15-34 33 1 17 14 24 34 24s33-7 34-24c2-18-10-33-34-33Z" fill="#FFF0D8"/>
+        <ellipse cx="120" cy="110" rx="29" ry="23" fill="#EAC9A2"/>
+        <ellipse cx="120" cy="107" rx="29" ry="22" fill="#FFF0D8"/>
+
+    <g class="mascot-arm mascot-arm-left">
+        <path d="M65 109c-11-1-16 10-9 22 6 12 19 20 27 13 7-7 0-19-8-29-3-4-6-6-10-6Z" fill="#A56B40"/>
+        <path d="M65 105c-10-1-15 9-8 20 6 11 18 18 25 12 6-6 0-17-8-27-3-3-6-5-9-5Z" fill="#D5A06D"/>
+        <path d="M62 112c-2 3-1 7 1 10" stroke="#E8B883" stroke-width="3.5" stroke-linecap="round"/></g>
+    <g class="mascot-arm mascot-arm-right">
+      <g transform="translate(240 0) scale(-1 1)">
+        <path d="M65 109c-11-1-16 10-9 22 6 12 19 20 27 13 7-7 0-19-8-29-3-4-6-6-10-6Z" fill="#A56B40"/>
+        <path d="M65 105c-10-1-15 9-8 20 6 11 18 18 25 12 6-6 0-17-8-27-3-3-6-5-9-5Z" fill="#D5A06D"/>
+        <path d="M62 112c-2 3-1 7 1 10" stroke="#E8B883" stroke-width="3.5" stroke-linecap="round"/></g>
+    </g>
+      <g class="mascot-face">
+
+        <ellipse cx="83" cy="103" rx="9" ry="7" fill="#E59A75" opacity=".65"/>
+        <ellipse cx="157" cy="103" rx="9" ry="7" fill="#E59A75" opacity=".65"/>
+        <ellipse cx="96" cy="88" rx="5.5" ry="7" fill="#593820"/><ellipse cx="144" cy="88" rx="5.5" ry="7" fill="#593820"/>
+        <path d="M113 99c0-4 14-4 14 0 0 4-4 7-7 7s-7-3-7-7Z" fill="#593820"/>
+        <path d="M120 105v6m0 0c-3 7-10 7-13 1m13-1c3 7 10 7 13 1" fill="none" stroke="#593820" stroke-width="3.5" stroke-linecap="round"/>
+      </g>
+    </g>
+    </g>
+  </svg>

@@ -1,4 +1,4 @@
-# Solingo platform — multi-stage build, runs Next.js standalone on Node 22.
+# soling — multi-stage build, runs Next.js standalone on Node 22.
 FROM node:22-alpine AS base
 RUN corepack enable && corepack prepare pnpm@11.11.0 --activate
 WORKDIR /app

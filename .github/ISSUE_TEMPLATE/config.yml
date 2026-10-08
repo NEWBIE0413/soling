@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Report a security vulnerability
-    url: mailto:sanidhyyy@gmail.com
+    url: https://github.com/NEWBIE0413/soling/security/advisories/new
     about: Do not file security reports as public GitHub issues.
